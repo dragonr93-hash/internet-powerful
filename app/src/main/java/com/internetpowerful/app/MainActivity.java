@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.identity.AuthorizationClient;
 import com.google.android.gms.auth.api.identity.AuthorizationRequest;
 import com.google.android.gms.auth.api.identity.AuthorizationResult;
 import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 
 import org.json.JSONObject;
@@ -1010,11 +1012,22 @@ public class MainActivity extends Activity {
 
         if (requestCode == GOOGLE_AUTH_REQUEST) {
 
-            if (resultCode != RESULT_OK
-                    || data == null) {
+            /*
+             * IMPORTANTE:
+             *
+             * Ya no asumimos que cualquier resultado
+             * diferente de RESULT_OK significa
+             * "cancelado".
+             *
+             * Primero comprobamos si Google devolvió
+             * un Intent.
+             */
+            if (data == null) {
 
                 sendGoogleErrorToWebView(
-                        "La autorización de Google fue cancelada."
+                        "Google no devolvió datos de autorización. "
+                                + "Código de resultado: "
+                                + resultCode
                 );
 
                 return;
@@ -1031,7 +1044,9 @@ public class MainActivity extends Activity {
                 if (result == null) {
 
                     sendGoogleErrorToWebView(
-                            "Google no devolvió un resultado válido."
+                            "Google no devolvió un resultado válido. "
+                                    + "Código de resultado: "
+                                    + resultCode
                     );
 
                     return;
@@ -1044,7 +1059,9 @@ public class MainActivity extends Activity {
                         || token.isEmpty()) {
 
                     sendGoogleErrorToWebView(
-                            "Google no entregó un token de acceso."
+                            "Google no entregó un token de acceso. "
+                                    + "Código de resultado: "
+                                    + resultCode
                     );
 
                     return;
@@ -1052,12 +1069,48 @@ public class MainActivity extends Activity {
 
                 sendGoogleTokenToWebView(token);
 
-            } catch (Exception e) {
+            } catch (ApiException e) {
+
+                String statusName =
+                        CommonStatusCodes
+                                .getStatusCodeString(
+                                        e.getStatusCode()
+                                );
+
+                String message =
+                        e.getMessage();
+
+                if (message == null
+                        || message.isEmpty()) {
+
+                    message =
+                            "Google rechazó la autorización.";
+                }
 
                 sendGoogleErrorToWebView(
-                        e.getMessage() != null
-                                ? e.getMessage()
-                                : "No se pudo completar la autorización de Google."
+                        "Error de Google: "
+                                + statusName
+                                + " ("
+                                + e.getStatusCode()
+                                + "). "
+                                + message
+                );
+
+            } catch (Exception e) {
+
+                String message =
+                        e.getMessage();
+
+                if (message == null
+                        || message.isEmpty()) {
+
+                    message =
+                            "No se pudo completar la autorización de Google.";
+                }
+
+                sendGoogleErrorToWebView(
+                        "Error al procesar Google: "
+                                + message
                 );
             }
 
