@@ -12,13 +12,15 @@ workflows:
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
 
-      - name: Obtener SHA-1
-        script: |
-          ./gradlew signingReport
-
       - name: Build Internet Powerful V45 APK
         script: |
           ./gradlew assembleDebug
+
+      - name: Obtener SHA-1 del APK
+        script: |
+          APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          echo "APK encontrado: $APK"
+          keytool -printcert -jarfile "$APK"
 
     artifacts:
       - app/build/outputs/apk/debug/*.apk
