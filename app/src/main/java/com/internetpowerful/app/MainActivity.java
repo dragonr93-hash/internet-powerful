@@ -46,9 +46,26 @@ public class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int CREATE_FILE_REQUEST = 1002;
 
+    /*
+     * GOOGLE DRIVE
+     */
+    private static final int GOOGLE_AUTH_REQUEST = 1003;
+
+    private static final String GOOGLE_DRIVE_SCOPE =
+            "https://www.googleapis.com/auth/drive.appdata";
+
+    private AuthorizationClient authorizationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*
+         * Inicializamos el cliente nativo de autorización
+         * de Google.
+         */
+        authorizationClient =
+                Identity.getAuthorizationClient(this);
 
         webView = new WebView(this);
         setContentView(webView);
@@ -80,8 +97,16 @@ public class MainActivity extends Activity {
                 fileChooserCallback = filePathCallback;
 
                 try {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                    Intent intent =
+                            new Intent(
+                                    Intent.ACTION_OPEN_DOCUMENT
+                            );
+
+                    intent.addCategory(
+                            Intent.CATEGORY_OPENABLE
+                    );
+
                     intent.setType("application/json");
 
                     startActivityForResult(
@@ -112,14 +137,18 @@ public class MainActivity extends Activity {
                     String message,
                     android.webkit.JsResult result) {
 
-                new android.app.AlertDialog.Builder(MainActivity.this)
+                new android.app.AlertDialog.Builder(
+                        MainActivity.this
+                )
                         .setMessage(message)
                         .setPositiveButton(
                                 "Aceptar",
-                                (dialog, which) -> result.confirm()
+                                (dialog, which) ->
+                                        result.confirm()
                         )
                         .setOnCancelListener(
-                                dialog -> result.cancel()
+                                dialog ->
+                                        result.cancel()
                         )
                         .show();
 
@@ -133,18 +162,23 @@ public class MainActivity extends Activity {
                     String message,
                     android.webkit.JsResult result) {
 
-                new android.app.AlertDialog.Builder(MainActivity.this)
+                new android.app.AlertDialog.Builder(
+                        MainActivity.this
+                )
                         .setMessage(message)
                         .setNegativeButton(
                                 "Cancelar",
-                                (dialog, which) -> result.cancel()
+                                (dialog, which) ->
+                                        result.cancel()
                         )
                         .setPositiveButton(
                                 "Aceptar",
-                                (dialog, which) -> result.confirm()
+                                (dialog, which) ->
+                                        result.confirm()
                         )
                         .setOnCancelListener(
-                                dialog -> result.cancel()
+                                dialog ->
+                                        result.cancel()
                         )
                         .show();
 
@@ -160,13 +194,17 @@ public class MainActivity extends Activity {
                     android.webkit.JsPromptResult result) {
 
                 final android.widget.EditText input =
-                        new android.widget.EditText(MainActivity.this);
+                        new android.widget.EditText(
+                                MainActivity.this
+                        );
 
                 input.setSingleLine(true);
                 input.setText(defaultValue);
 
                 android.widget.FrameLayout container =
-                        new android.widget.FrameLayout(MainActivity.this);
+                        new android.widget.FrameLayout(
+                                MainActivity.this
+                        );
 
                 int padding = 40;
 
@@ -179,12 +217,15 @@ public class MainActivity extends Activity {
 
                 container.addView(input);
 
-                new android.app.AlertDialog.Builder(MainActivity.this)
+                new android.app.AlertDialog.Builder(
+                        MainActivity.this
+                )
                         .setMessage(message)
                         .setView(container)
                         .setNegativeButton(
                                 "Cancelar",
-                                (dialog, which) -> result.cancel()
+                                (dialog, which) ->
+                                        result.cancel()
                         )
                         .setPositiveButton(
                                 "Aceptar",
@@ -194,7 +235,8 @@ public class MainActivity extends Activity {
                                         )
                         )
                         .setOnCancelListener(
-                                dialog -> result.cancel()
+                                dialog ->
+                                        result.cancel()
                         )
                         .show();
 
@@ -268,11 +310,11 @@ public class MainActivity extends Activity {
                  * Conectamos window.print() con Android.
                  */
                 view.evaluateJavascript(
-                        "window.print=function(){" +
-                                "if(window.Android){" +
-                                "Android.printPage();" +
-                                "}" +
-                                "};",
+                        "window.print=function(){"
+                                + "if(window.Android){"
+                                + "Android.printPage();"
+                                + "}"
+                                + "};",
                         null
                 );
 
@@ -284,101 +326,95 @@ public class MainActivity extends Activity {
                  * selector de archivos nativo.
                  */
                 view.evaluateJavascript(
-                        "(function(){" +
-                                "try{" +
-                                "Object.defineProperty(" +
-                                "navigator,'share'," +
-                                "{value:undefined,configurable:true}" +
-                                ");" +
-                                "}catch(e){}" +
-                                "})();",
+                        "(function(){"
+                                + "try{"
+                                + "Object.defineProperty("
+                                + "navigator,'share',"
+                                + "{value:undefined,configurable:true}"
+                                + ");"
+                                + "}catch(e){}"
+                                + "})();",
                         null
                 );
 
                 /*
                  * INTERCEPTOR DEL RESPALDO LOCAL
-                 *
-                 * V45 crea un enlace <a download> y después
-                 * ejecuta a.click() mediante JavaScript.
-                 *
-                 * Por eso interceptamos directamente
-                 * HTMLAnchorElement.prototype.click.
                  */
                 view.evaluateJavascript(
-                        "(function(){" +
+                        "(function(){"
 
-                                "if(window.__androidBackupBridge)return;" +
+                                + "if(window.__androidBackupBridge)return;"
 
-                                "window.__androidBackupBridge=true;" +
+                                + "window.__androidBackupBridge=true;"
 
-                                "var originalClick=" +
-                                "HTMLAnchorElement.prototype.click;" +
+                                + "var originalClick="
+                                + "HTMLAnchorElement.prototype.click;"
 
-                                "HTMLAnchorElement.prototype.click=" +
-                                "function(){" +
+                                + "HTMLAnchorElement.prototype.click="
+                                + "function(){"
 
-                                "var a=this;" +
+                                + "var a=this;"
 
-                                "if(a && " +
-                                "a.hasAttribute('download')" +
-                                " && a.href" +
-                                " && a.href.indexOf('blob:')===0){" +
+                                + "if(a && "
+                                + "a.hasAttribute('download')"
+                                + " && a.href"
+                                + " && a.href.indexOf('blob:')===0){"
 
-                                "var href=a.href;" +
+                                + "var href=a.href;"
 
-                                "var name=" +
-                                "a.getAttribute('download')||" +
-                                "'Internet-Powerful-Respaldo.json';" +
+                                + "var name="
+                                + "a.getAttribute('download')||"
+                                + "'Internet-Powerful-Respaldo.json';"
 
-                                "fetch(href)" +
+                                + "fetch(href)"
 
-                                ".then(function(r){" +
-                                "return r.blob();" +
-                                "})" +
+                                + ".then(function(r){"
+                                + "return r.blob();"
+                                + "})"
 
-                                ".then(function(blob){" +
+                                + ".then(function(blob){"
 
-                                "var reader=" +
-                                "new FileReader();" +
+                                + "var reader="
+                                + "new FileReader();"
 
-                                "reader.onloadend=function(){" +
+                                + "reader.onloadend=function(){"
 
-                                "var result=reader.result;" +
+                                + "var result=reader.result;"
 
-                                "var comma=result.indexOf(',');" +
+                                + "var comma=result.indexOf(',');"
 
-                                "var base64=" +
-                                "result.substring(comma+1);" +
+                                + "var base64="
+                                + "result.substring(comma+1);"
 
-                                "Android.saveBase64File(" +
-                                "name," +
-                                "blob.type||'application/json'," +
-                                "base64" +
-                                ");" +
+                                + "Android.saveBase64File("
+                                + "name,"
+                                + "blob.type||'application/json',"
+                                + "base64"
+                                + ");"
 
-                                "};" +
+                                + "};"
 
-                                "reader.readAsDataURL(blob);" +
+                                + "reader.readAsDataURL(blob);"
 
-                                "})" +
+                                + "})"
 
-                                ".catch(function(){" +
+                                + ".catch(function(){"
 
-                                "Android.showToast(" +
-                                "'No se pudo preparar el respaldo'" +
-                                ");" +
+                                + "Android.showToast("
+                                + "'No se pudo preparar el respaldo'"
+                                + ");"
 
-                                "});" +
+                                + "});"
 
-                                "return;" +
+                                + "return;"
 
-                                "}" +
+                                + "}"
 
-                                "return originalClick.call(this);" +
+                                + "return originalClick.call(this);"
 
-                                "};" +
+                                + "};"
 
-                                "})();",
+                                + "})();",
                         null
                 );
             }
@@ -429,12 +465,103 @@ public class MainActivity extends Activity {
         );
 
         /*
-         * Cargamos la versión V45 incluida
-         * dentro de la aplicación.
+         * Cargamos V45.
          */
         webView.loadUrl(
                 "file:///android_asset/index.html"
         );
+    }
+
+    /*
+     * Envía el token de Google al JavaScript.
+     */
+    private void sendGoogleTokenToWebView(
+            final String token) {
+
+        if (token == null || token.isEmpty()) {
+
+            sendGoogleErrorToWebView(
+                    "Google no entregó un token de acceso."
+            );
+
+            return;
+        }
+
+        runOnUiThread(() -> {
+
+            try {
+
+                String safeToken =
+                        JSONObject.quote(token);
+
+                webView.evaluateJavascript(
+                        "if(window.onAndroidGoogleDriveToken){"
+                                + "window.onAndroidGoogleDriveToken("
+                                + safeToken
+                                + ");"
+                                + "}",
+                        null
+                );
+
+            } catch (Exception e) {
+
+                sendGoogleErrorToWebView(
+                        "No se pudo entregar el token a la aplicación."
+                );
+            }
+        });
+    }
+
+    /*
+     * Envía un error de Google al JavaScript.
+     */
+    private void sendGoogleErrorToWebView(
+            final String message) {
+
+        runOnUiThread(() -> {
+
+            try {
+
+                String safeMessage =
+                        JSONObject.quote(
+                                message != null
+                                        ? message
+                                        : "Error de autorización."
+                        );
+
+                webView.evaluateJavascript(
+                        "if(window.onAndroidGoogleDriveError){"
+                                + "window.onAndroidGoogleDriveError("
+                                + safeMessage
+                                + ");"
+                                + "}",
+                        null
+                );
+
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    /*
+     * Envía aviso de desconexión al JavaScript.
+     */
+    private void sendGoogleDisconnectedToWebView() {
+
+        runOnUiThread(() -> {
+
+            try {
+
+                webView.evaluateJavascript(
+                        "if(window.onAndroidGoogleDriveDisconnected){"
+                                + "window.onAndroidGoogleDriveDisconnected();"
+                                + "}",
+                        null
+                );
+
+            } catch (Exception ignored) {
+            }
+        });
     }
 
     /*
@@ -522,15 +649,6 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            /*
-             * MUY IMPORTANTE:
-             *
-             * JavaScriptInterface puede ejecutarse
-             * en un hilo diferente al hilo principal.
-             *
-             * Por eso abrimos el selector de archivos
-             * dentro de runOnUiThread().
-             */
             runOnUiThread(() -> {
 
                 try {
@@ -573,6 +691,203 @@ public class MainActivity extends Activity {
 
             });
         }
+
+        /*
+         * ==========================================
+         * GOOGLE DRIVE - AUTORIZACIÓN NATIVA
+         * ==========================================
+         */
+
+        @JavascriptInterface
+        public void requestGoogleDriveToken() {
+
+            runOnUiThread(() -> {
+
+                try {
+
+                    AuthorizationRequest request =
+                            new AuthorizationRequest.Builder()
+                                    .setRequestedScopes(
+                                            Arrays.asList(
+                                                    new Scope(
+                                                            GOOGLE_DRIVE_SCOPE
+                                                    )
+                                            )
+                                    )
+                                    .build();
+
+                    authorizationClient
+                            .authorize(request)
+                            .addOnSuccessListener(
+                                    result -> {
+
+                                        handleGoogleAuthorizationResult(
+                                                result
+                                        );
+                                    }
+                            )
+                            .addOnFailureListener(
+                                    exception -> {
+
+                                        String message =
+                                                exception.getMessage();
+
+                                        if (message == null
+                                                || message.isEmpty()) {
+
+                                            message =
+                                                    "No se pudo iniciar la autorización de Google.";
+                                        }
+
+                                        sendGoogleErrorToWebView(
+                                                message
+                                        );
+                                    }
+                            );
+
+                } catch (Exception e) {
+
+                    sendGoogleErrorToWebView(
+                            e.getMessage() != null
+                                    ? e.getMessage()
+                                    : "No se pudo solicitar autorización de Google."
+                    );
+                }
+            });
+        }
+
+        /*
+         * Desconecta/revoca el acceso de Google Drive.
+         */
+        @JavascriptInterface
+        public void disconnectGoogleDrive() {
+
+            runOnUiThread(() -> {
+
+                try {
+
+                    RevokeAccessRequest request =
+                            RevokeAccessRequest.builder()
+                                    .setScopes(
+                                            Arrays.asList(
+                                                    new Scope(
+                                                            GOOGLE_DRIVE_SCOPE
+                                                    )
+                                            )
+                                    )
+                                    .build();
+
+                    authorizationClient
+                            .revokeAccess(request)
+                            .addOnSuccessListener(
+                                    unused -> {
+
+                                        sendGoogleDisconnectedToWebView();
+
+                                        Toast.makeText(
+                                                MainActivity.this,
+                                                "Google Drive desconectado",
+                                                Toast.LENGTH_SHORT
+                                        ).show();
+                                    }
+                            )
+                            .addOnFailureListener(
+                                    exception -> {
+
+                                        sendGoogleErrorToWebView(
+                                                exception.getMessage() != null
+                                                        ? exception.getMessage()
+                                                        : "No se pudo desconectar Google Drive."
+                                        );
+                                    }
+                            );
+
+                } catch (Exception e) {
+
+                    sendGoogleErrorToWebView(
+                            e.getMessage() != null
+                                    ? e.getMessage()
+                                    : "No se pudo desconectar Google Drive."
+                    );
+                }
+            });
+        }
+    }
+
+    /*
+     * Procesa el resultado de autorización de Google.
+     */
+    private void handleGoogleAuthorizationResult(
+            AuthorizationResult result) {
+
+        if (result == null) {
+
+            sendGoogleErrorToWebView(
+                    "Google no devolvió un resultado de autorización."
+            );
+
+            return;
+        }
+
+        /*
+         * Si Google necesita mostrar la pantalla
+         * de autorización, recibimos un PendingIntent.
+         */
+        if (result.hasResolution()) {
+
+            PendingIntent pendingIntent =
+                    result.getPendingIntent();
+
+            if (pendingIntent == null) {
+
+                sendGoogleErrorToWebView(
+                        "Google solicitó autorización pero no proporcionó la pantalla de autorización."
+                );
+
+                return;
+            }
+
+            try {
+
+                startIntentSenderForResult(
+                        pendingIntent.getIntentSender(),
+                        GOOGLE_AUTH_REQUEST,
+                        null,
+                        0,
+                        0,
+                        0,
+                        null
+                );
+
+            } catch (IntentSender.SendIntentException e) {
+
+                sendGoogleErrorToWebView(
+                        e.getMessage() != null
+                                ? e.getMessage()
+                                : "No se pudo abrir la autorización de Google."
+                );
+            }
+
+            return;
+        }
+
+        /*
+         * Si no necesita resolución, el token
+         * puede venir directamente.
+         */
+        String token =
+                result.getAccessToken();
+
+        if (token == null || token.isEmpty()) {
+
+            sendGoogleErrorToWebView(
+                    "Google no entregó un token de acceso."
+            );
+
+            return;
+        }
+
+        sendGoogleTokenToWebView(token);
     }
 
     @Override
@@ -586,6 +901,67 @@ public class MainActivity extends Activity {
                 resultCode,
                 data
         );
+
+        /*
+         * ==========================================
+         * RESULTADO DE AUTORIZACIÓN DE GOOGLE
+         * ==========================================
+         */
+        if (requestCode == GOOGLE_AUTH_REQUEST) {
+
+            if (resultCode != RESULT_OK
+                    || data == null) {
+
+                sendGoogleErrorToWebView(
+                        "La autorización de Google fue cancelada."
+                );
+
+                return;
+            }
+
+            try {
+
+                AuthorizationResult result =
+                        authorizationClient
+                                .getAuthorizationResultFromIntent(
+                                        data
+                                );
+
+                if (result == null) {
+
+                    sendGoogleErrorToWebView(
+                            "Google no devolvió un resultado válido."
+                    );
+
+                    return;
+                }
+
+                String token =
+                        result.getAccessToken();
+
+                if (token == null
+                        || token.isEmpty()) {
+
+                    sendGoogleErrorToWebView(
+                            "Google no entregó un token de acceso."
+                    );
+
+                    return;
+                }
+
+                sendGoogleTokenToWebView(token);
+
+            } catch (Exception e) {
+
+                sendGoogleErrorToWebView(
+                        e.getMessage() != null
+                                ? e.getMessage()
+                                : "No se pudo completar la autorización de Google."
+                );
+            }
+
+            return;
+        }
 
         /*
          * Resultado del selector para RESTAURAR respaldo.
