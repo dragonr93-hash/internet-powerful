@@ -1,40 +1,38 @@
 package com.internetpowerful.app;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
+import android.print.PrintDocumentAdapter;
 import android.util.Base64;
+import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
-import android.webkit.JsPromptResult;
-import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class MainActivity extends Activity {
 
     private WebView webView;
 
-    private ValueCallback<Uri[]> filePathCallback;
+    private ValueCallback<Uri[]> fileChooserCallback;
+
+    private byte[] pendingFileBytes;
+    private String pendingFileName;
+    private String pendingFileMime;
 
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int CREATE_FILE_REQUEST = 1002;
-
-    private byte[] pendingFileBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,168 +46,65 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
-        settings.setSupportZoom(false);
+
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        /*
-         * Puente entre nuestro HTML y Android.
-         */
-        webView.addJavascriptInterface(
-                new AndroidBridge(),
-                "Android"
-        );
-
-        webView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public boolean shouldOverrideUrlLoading(
-                    WebView view,
-                    WebResourceRequest request) {
-
-                return openExternalUrl(
-                        request.getUrl().toString()
-                );
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(
-                    WebView view,
-                    String url) {
-
-                return openExternalUrl(url);
-            }
-
-            @Override
-            public void onPageFinished(
-                    WebView view,
-                    String url) {
-
-                super.onPageFinished(view, url);
-
-                /*
-                 * Conectamos window.print() con Android.
-                 */
-                view.evaluateJavascript(
-                        "window.print=function(){" +
-                        "if(window.Android){" +
-                        "Android.printPage();" +
-                        "}" +
-                        "};",
-                        null
-                );
-
-                /*
-                 * El respaldo V45 intenta usar navigator.share().
-                 * Lo desactivamos para que utilice el mecanismo
-                 * de descarga que vamos a interceptar.
-                 */
-                view.evaluateJavascript(
-                        "(function(){" +
-                        "try{" +
-                        "Object.defineProperty(" +
-                        "navigator,'share'," +
-                        "{value:undefined,configurable:true}" +
-                        ");" +
-                        "}catch(e){}" +
-                        "})();",
-                        null
-                );
-
-                /*
-                 * Interceptamos los enlaces creados por el HTML
-                 * con download="...".
-                 *
-                 * Esto permite capturar el Blob del respaldo
-                 * y enviarlo al selector de archivos de Android.
-                 */
-                view.evaluateJavascript(
-                        "(function(){" +
-
-                        "if(window.__androidBackupBridge)return;" +
-                        "window.__androidBackupBridge=true;" +
-
-                        "document.addEventListener('click'," +
-                        "function(e){" +
-
-                        "var a=e.target;" +
-
-                        "while(a && a.tagName!=='A')" +
-                        "a=a.parentElement;" +
-
-                        "if(!a)return;" +
-
-                        "if(!a.hasAttribute('download'))return;" +
-
-                        "var href=a.href;" +
-                        "var name=a.getAttribute('download')||" +
-                        "'Internet-Powerful-Respaldo.json';" +
-
-                        "if(!href || href.indexOf('blob:')!==0)" +
-                        "return;" +
-
-                        "e.preventDefault();" +
-                        "e.stopPropagation();" +
-
-                        "fetch(href)" +
-                        ".then(function(r){return r.blob();})" +
-                        ".then(function(blob){" +
-
-                        "var reader=new FileReader();" +
-
-                        "reader.onloadend=function(){" +
-
-                        "var result=reader.result;" +
-
-                        "var comma=result.indexOf(',');" +
-
-                        "var base64=result.substring(comma+1);" +
-
-                        "Android.saveBase64File(" +
-                        "name," +
-                        "blob.type||'application/json'," +
-                        "base64" +
-                        ");" +
-
-                        "};" +
-
-                        "reader.readAsDataURL(blob);" +
-
-                        "})" +
-
-                        ".catch(function(){" +
-
-                        "Android.showToast(" +
-                        "'No se pudo preparar el respaldo'" +
-                        ");" +
-
-                        "});" +
-
-                        "},true);" +
-
-                        "})();",
-                        null
-                );
-            }
-        });
-
         webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public boolean onShowFileChooser(
+                    WebView webView,
+                    ValueCallback<Uri[]> filePathCallback,
+                    FileChooserParams fileChooserParams) {
+
+                if (fileChooserCallback != null) {
+                    fileChooserCallback.onReceiveValue(null);
+                }
+
+                fileChooserCallback = filePathCallback;
+
+                try {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/json");
+
+                    startActivityForResult(
+                            intent,
+                            FILE_CHOOSER_REQUEST
+                    );
+
+                    return true;
+
+                } catch (Exception e) {
+
+                    fileChooserCallback = null;
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "No se pudo abrir el selector de archivos",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    return false;
+                }
+            }
 
             @Override
             public boolean onJsAlert(
                     WebView view,
                     String url,
                     String message,
-                    final JsResult result) {
+                    android.webkit.JsResult result) {
 
-                new AlertDialog.Builder(MainActivity.this)
+                new android.app.AlertDialog.Builder(MainActivity.this)
                         .setMessage(message)
                         .setPositiveButton(
                                 "Aceptar",
-                                (dialog, which) ->
-                                        result.confirm()
+                                (dialog, which) -> result.confirm()
                         )
                         .setOnCancelListener(
                                 dialog -> result.cancel()
@@ -224,19 +119,17 @@ public class MainActivity extends Activity {
                     WebView view,
                     String url,
                     String message,
-                    final JsResult result) {
+                    android.webkit.JsResult result) {
 
-                new AlertDialog.Builder(MainActivity.this)
+                new android.app.AlertDialog.Builder(MainActivity.this)
                         .setMessage(message)
                         .setNegativeButton(
                                 "Cancelar",
-                                (dialog, which) ->
-                                        result.cancel()
+                                (dialog, which) -> result.cancel()
                         )
                         .setPositiveButton(
                                 "Aceptar",
-                                (dialog, which) ->
-                                        result.confirm()
+                                (dialog, which) -> result.confirm()
                         )
                         .setOnCancelListener(
                                 dialog -> result.cancel()
@@ -252,21 +145,34 @@ public class MainActivity extends Activity {
                     String url,
                     String message,
                     String defaultValue,
-                    final JsPromptResult result) {
+                    android.webkit.JsPromptResult result) {
 
-                final EditText input =
-                        new EditText(MainActivity.this);
+                final android.widget.EditText input =
+                        new android.widget.EditText(MainActivity.this);
 
-                input.setSingleLine(false);
+                input.setSingleLine(true);
                 input.setText(defaultValue);
 
-                new AlertDialog.Builder(MainActivity.this)
+                android.widget.FrameLayout container =
+                        new android.widget.FrameLayout(MainActivity.this);
+
+                int padding = 40;
+
+                container.setPadding(
+                        padding,
+                        0,
+                        padding,
+                        0
+                );
+
+                container.addView(input);
+
+                new android.app.AlertDialog.Builder(MainActivity.this)
                         .setMessage(message)
-                        .setView(input)
+                        .setView(container)
                         .setNegativeButton(
                                 "Cancelar",
-                                (dialog, which) ->
-                                        result.cancel()
+                                (dialog, which) -> result.cancel()
                         )
                         .setPositiveButton(
                                 "Aceptar",
@@ -282,142 +188,260 @@ public class MainActivity extends Activity {
 
                 return true;
             }
+        });
+
+        webView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public boolean onShowFileChooser(
-                    WebView webView,
-                    ValueCallback<Uri[]> callback,
-                    FileChooserParams params) {
+            public boolean shouldOverrideUrlLoading(
+                    WebView view,
+                    WebResourceRequest request) {
 
-                if (filePathCallback != null) {
-                    filePathCallback.onReceiveValue(null);
-                }
+                Uri uri = request.getUrl();
 
-                filePathCallback = callback;
-
-                try {
-
-                    Intent intent =
-                            params.createIntent();
-
-                    startActivityForResult(
-                            intent,
-                            FILE_CHOOSER_REQUEST
-                    );
-
-                    return true;
-
-                } catch (Exception e) {
-
-                    filePathCallback = null;
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            "No se pudo abrir el selector de archivos",
-                            Toast.LENGTH_LONG
-                    ).show();
-
+                if (uri == null) {
                     return false;
                 }
+
+                String scheme = uri.getScheme();
+
+                if (scheme == null) {
+                    return false;
+                }
+
+                /*
+                 * Abrimos enlaces externos con Android.
+                 */
+                if (scheme.equalsIgnoreCase("http")
+                        || scheme.equalsIgnoreCase("https")
+                        || scheme.equalsIgnoreCase("whatsapp")
+                        || scheme.equalsIgnoreCase("tel")
+                        || scheme.equalsIgnoreCase("mailto")) {
+
+                    try {
+
+                        Intent intent =
+                                new Intent(
+                                        Intent.ACTION_VIEW,
+                                        uri
+                                );
+
+                        startActivity(intent);
+
+                        return true;
+
+                    } catch (Exception e) {
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "No se pudo abrir el enlace",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onPageFinished(
+                    WebView view,
+                    String url) {
+
+                super.onPageFinished(view, url);
+
+                /*
+                 * Conectamos window.print() con Android.
+                 */
+                view.evaluateJavascript(
+                        "window.print=function(){" +
+                                "if(window.Android){" +
+                                "Android.printPage();" +
+                                "}" +
+                                "};",
+                        null
+                );
+
+                /*
+                 * V45 intenta utilizar navigator.share()
+                 * para el respaldo.
+                 *
+                 * En Android queremos utilizar nuestro
+                 * selector de archivos nativo.
+                 */
+                view.evaluateJavascript(
+                        "(function(){" +
+                                "try{" +
+                                "Object.defineProperty(" +
+                                "navigator,'share'," +
+                                "{value:undefined,configurable:true}" +
+                                ");" +
+                                "}catch(e){}" +
+                                "})();",
+                        null
+                );
+
+                /*
+                 * INTERCEPTOR DEL RESPALDO LOCAL
+                 *
+                 * V45 crea un enlace <a download> y después
+                 * ejecuta a.click() mediante JavaScript.
+                 *
+                 * Por eso interceptamos directamente
+                 * HTMLAnchorElement.prototype.click.
+                 */
+                view.evaluateJavascript(
+                        "(function(){" +
+
+                                "if(window.__androidBackupBridge)return;" +
+
+                                "window.__androidBackupBridge=true;" +
+
+                                "var originalClick=" +
+                                "HTMLAnchorElement.prototype.click;" +
+
+                                "HTMLAnchorElement.prototype.click=" +
+                                "function(){" +
+
+                                "var a=this;" +
+
+                                "if(a && " +
+                                "a.hasAttribute('download')" +
+                                " && a.href" +
+                                " && a.href.indexOf('blob:')===0){" +
+
+                                "var href=a.href;" +
+
+                                "var name=" +
+                                "a.getAttribute('download')||" +
+                                "'Internet-Powerful-Respaldo.json';" +
+
+                                "fetch(href)" +
+
+                                ".then(function(r){" +
+                                "return r.blob();" +
+                                "})" +
+
+                                ".then(function(blob){" +
+
+                                "var reader=" +
+                                "new FileReader();" +
+
+                                "reader.onloadend=function(){" +
+
+                                "var result=reader.result;" +
+
+                                "var comma=result.indexOf(',');" +
+
+                                "var base64=" +
+                                "result.substring(comma+1);" +
+
+                                "Android.saveBase64File(" +
+                                "name," +
+                                "blob.type||'application/json'," +
+                                "base64" +
+                                ");" +
+
+                                "};" +
+
+                                "reader.readAsDataURL(blob);" +
+
+                                "})" +
+
+                                ".catch(function(){" +
+
+                                "Android.showToast(" +
+                                "'No se pudo preparar el respaldo'" +
+                                ");" +
+
+                                "});" +
+
+                                "return;" +
+
+                                "}" +
+
+                                "return originalClick.call(this);" +
+
+                                "};" +
+
+                                "})();",
+                        null
+                );
             }
         });
 
+        /*
+         * Capturamos descargas normales.
+         */
+        webView.setDownloadListener(
+                new DownloadListener() {
+
+                    @Override
+                    public void onDownloadStart(
+                            String url,
+                            String userAgent,
+                            String contentDisposition,
+                            String mimetype,
+                            long contentLength) {
+
+                        try {
+
+                            Intent intent =
+                                    new Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(url)
+                                    );
+
+                            startActivity(intent);
+
+                        } catch (Exception e) {
+
+                            Toast.makeText(
+                                    MainActivity.this,
+                                    "No se pudo abrir la descarga",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+                }
+        );
+
+        /*
+         * Puente JavaScript -> Android.
+         */
+        webView.addJavascriptInterface(
+                new AndroidBridge(),
+                "Android"
+        );
+
+        /*
+         * Cargamos la versión V45 incluida
+         * dentro de la aplicación.
+         */
         webView.loadUrl(
                 "file:///android_asset/index.html"
         );
     }
 
     /*
-     * Abrir enlaces externos.
+     * Puente utilizado por JavaScript.
      */
-    private boolean openExternalUrl(String url) {
-
-        if (url == null) {
-            return false;
-        }
-
-        try {
-
-            if (url.startsWith("whatsapp://")
-                    || url.startsWith("https://wa.me/")
-                    || url.startsWith("https://api.whatsapp.com/")) {
-
-                Intent intent =
-                        new Intent(Intent.ACTION_VIEW);
-
-                intent.setData(Uri.parse(url));
-
-                startActivity(intent);
-
-                return true;
-            }
-
-            if (url.startsWith("tel:")) {
-
-                Intent intent =
-                        new Intent(Intent.ACTION_DIAL);
-
-                intent.setData(Uri.parse(url));
-
-                startActivity(intent);
-
-                return true;
-            }
-
-            if (url.startsWith("mailto:")) {
-
-                Intent intent =
-                        new Intent(Intent.ACTION_SENDTO);
-
-                intent.setData(Uri.parse(url));
-
-                startActivity(intent);
-
-                return true;
-            }
-
-            if (url.startsWith("http://")
-                    || url.startsWith("https://")) {
-
-                Intent intent =
-                        new Intent(Intent.ACTION_VIEW);
-
-                intent.setData(Uri.parse(url));
-
-                startActivity(intent);
-
-                return true;
-            }
-
-        } catch (Exception e) {
-
-            Toast.makeText(
-                    this,
-                    "No se pudo abrir el enlace",
-                    Toast.LENGTH_SHORT
-            ).show();
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /*
-     * Puente JavaScript -> Android.
-     */
-    private class AndroidBridge {
+    public class AndroidBridge {
 
         @JavascriptInterface
-        public void showToast(String message) {
+        public void showToast(final String message) {
 
-            runOnUiThread(() ->
-                    Toast.makeText(
-                            MainActivity.this,
-                            message,
-                            Toast.LENGTH_SHORT
-                    ).show()
-            );
+            runOnUiThread(() -> {
+
+                Toast.makeText(
+                        MainActivity.this,
+                        message,
+                        Toast.LENGTH_LONG
+                ).show();
+
+            });
         }
 
         @JavascriptInterface
@@ -430,7 +454,7 @@ public class MainActivity extends Activity {
                     PrintManager printManager =
                             (PrintManager)
                                     getSystemService(
-                                            Context.PRINT_SERVICE
+                                            PRINT_SERVICE
                                     );
 
                     PrintDocumentAdapter adapter =
@@ -438,20 +462,10 @@ public class MainActivity extends Activity {
                                     "Internet Powerful"
                             );
 
-                    PrintAttributes attributes =
-                            new PrintAttributes.Builder()
-                                    .setMediaSize(
-                                            PrintAttributes.MediaSize.NA_LETTER
-                                    )
-                                    .setMinMargins(
-                                            PrintAttributes.Margins.NO_MARGINS
-                                    )
-                                    .build();
-
                     printManager.print(
                             "Internet Powerful",
                             adapter,
-                            attributes
+                            null
                     );
 
                 } catch (Exception e) {
@@ -462,6 +476,7 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_LONG
                     ).show();
                 }
+
             });
         }
 
@@ -469,51 +484,82 @@ public class MainActivity extends Activity {
         public void saveBase64File(
                 String fileName,
                 String mimeType,
-                String base64Data) {
+                String base64) {
 
             try {
 
                 pendingFileBytes =
                         Base64.decode(
-                                base64Data,
+                                base64,
                                 Base64.DEFAULT
                         );
 
-                Intent intent =
-                        new Intent(
-                                Intent.ACTION_CREATE_DOCUMENT
-                        );
-
-                intent.addCategory(
-                        Intent.CATEGORY_OPENABLE
-                );
-
-                intent.setType(
-                        mimeType != null
-                                ? mimeType
-                                : "application/json"
-                );
-
-                intent.putExtra(
-                        Intent.EXTRA_TITLE,
-                        fileName
-                );
-
-                startActivityForResult(
-                        intent,
-                        CREATE_FILE_REQUEST
-                );
+                pendingFileName = fileName;
+                pendingFileMime = mimeType;
 
             } catch (Exception e) {
 
                 runOnUiThread(() ->
                         Toast.makeText(
                                 MainActivity.this,
-                                "No se pudo preparar el respaldo",
+                                "No se pudo preparar el archivo",
                                 Toast.LENGTH_LONG
                         ).show()
                 );
+
+                return;
             }
+
+            /*
+             * MUY IMPORTANTE:
+             *
+             * JavaScriptInterface puede ejecutarse
+             * en un hilo diferente al hilo principal.
+             *
+             * Por eso abrimos el selector de archivos
+             * dentro de runOnUiThread().
+             */
+            runOnUiThread(() -> {
+
+                try {
+
+                    Intent intent =
+                            new Intent(
+                                    Intent.ACTION_CREATE_DOCUMENT
+                            );
+
+                    intent.addCategory(
+                            Intent.CATEGORY_OPENABLE
+                    );
+
+                    intent.setType(
+                            pendingFileMime != null
+                                    ? pendingFileMime
+                                    : "application/json"
+                    );
+
+                    intent.putExtra(
+                            Intent.EXTRA_TITLE,
+                            pendingFileName != null
+                                    ? pendingFileName
+                                    : "Internet-Powerful-Respaldo.json"
+                    );
+
+                    startActivityForResult(
+                            intent,
+                            CREATE_FILE_REQUEST
+                    );
+
+                } catch (Exception e) {
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "No se pudo abrir la descarga",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+
+            });
         }
     }
 
@@ -530,33 +576,35 @@ public class MainActivity extends Activity {
         );
 
         /*
-         * Restaurar archivo JSON.
+         * Resultado del selector para RESTAURAR respaldo.
          */
         if (requestCode == FILE_CHOOSER_REQUEST) {
 
-            if (filePathCallback == null) {
+            if (fileChooserCallback == null) {
                 return;
             }
 
             Uri[] results = null;
 
             if (resultCode == RESULT_OK
-                    && data != null
-                    && data.getData() != null) {
+                    && data != null) {
 
-                results =
-                        new Uri[]{
-                                data.getData()
-                        };
+                Uri uri = data.getData();
+
+                if (uri != null) {
+                    results = new Uri[]{uri};
+                }
             }
 
-            filePathCallback.onReceiveValue(results);
+            fileChooserCallback.onReceiveValue(results);
 
-            filePathCallback = null;
+            fileChooserCallback = null;
+
+            return;
         }
 
         /*
-         * Guardar respaldo JSON.
+         * Resultado del selector para GUARDAR respaldo.
          */
         if (requestCode == CREATE_FILE_REQUEST) {
 
@@ -573,43 +621,51 @@ public class MainActivity extends Activity {
                             getContentResolver()
                                     .openOutputStream(uri);
 
-                    if (outputStream == null) {
-                        throw new IOException(
-                                "No se pudo abrir el archivo"
+                    if (outputStream != null) {
+
+                        outputStream.write(
+                                pendingFileBytes
                         );
+
+                        outputStream.flush();
+                        outputStream.close();
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Respaldo guardado correctamente",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
-
-                    outputStream.write(
-                            pendingFileBytes
-                    );
-
-                    outputStream.flush();
-                    outputStream.close();
-
-                    Toast.makeText(
-                            this,
-                            "Respaldo guardado correctamente",
-                            Toast.LENGTH_LONG
-                    ).show();
 
                 } catch (Exception e) {
 
                     Toast.makeText(
-                            this,
-                            "Error al guardar el respaldo",
+                            MainActivity.this,
+                            "No se pudo guardar el respaldo",
                             Toast.LENGTH_LONG
                     ).show();
                 }
+
+            } else {
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "Guardado cancelado",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
 
             pendingFileBytes = null;
+            pendingFileName = null;
+            pendingFileMime = null;
         }
     }
 
     @Override
     public void onBackPressed() {
 
-        if (webView.canGoBack()) {
+        if (webView != null
+                && webView.canGoBack()) {
 
             webView.goBack();
 
