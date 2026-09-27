@@ -23,14 +23,14 @@ import com.google.android.gms.auth.api.identity.AuthorizationClient;
 import com.google.android.gms.auth.api.identity.AuthorizationRequest;
 import com.google.android.gms.auth.api.identity.AuthorizationResult;
 import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.auth.api.identity.RevokeAccessRequest;
 import com.google.android.gms.common.api.Scope;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 public class MainActivity extends Activity {
@@ -47,14 +47,28 @@ public class MainActivity extends Activity {
     private static final int CREATE_FILE_REQUEST = 1002;
 
     /*
+     * ==========================================
      * GOOGLE DRIVE
+     * ==========================================
      */
+
     private static final int GOOGLE_AUTH_REQUEST = 1003;
 
     private static final String GOOGLE_DRIVE_SCOPE =
             "https://www.googleapis.com/auth/drive.appdata";
 
+    private static final String GOOGLE_REVOKE_URL =
+            "https://oauth2.googleapis.com/revoke";
+
     private AuthorizationClient authorizationClient;
+
+    /*
+     * Token actual de Google.
+     *
+     * Se mantiene únicamente en memoria mientras
+     * la aplicación está ejecutándose.
+     */
+    private volatile String googleAccessToken = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -473,8 +487,11 @@ public class MainActivity extends Activity {
     }
 
     /*
-     * Envía el token de Google al JavaScript.
+     * ==========================================
+     * GOOGLE DRIVE - RESPUESTAS AL JAVASCRIPT
+     * ==========================================
      */
+
     private void sendGoogleTokenToWebView(
             final String token) {
 
@@ -486,6 +503,8 @@ public class MainActivity extends Activity {
 
             return;
         }
+
+        googleAccessToken = token;
 
         runOnUiThread(() -> {
 
@@ -512,9 +531,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    /*
-     * Envía un error de Google al JavaScript.
-     */
     private void sendGoogleErrorToWebView(
             final String message) {
 
@@ -543,10 +559,9 @@ public class MainActivity extends Activity {
         });
     }
 
-    /*
-     * Envía aviso de desconexión al JavaScript.
-     */
     private void sendGoogleDisconnectedToWebView() {
+
+        googleAccessToken = "";
 
         runOnUiThread(() -> {
 
@@ -565,8 +580,11 @@ public class MainActivity extends Activity {
     }
 
     /*
-     * Puente utilizado por JavaScript.
+     * ==========================================
+     * PUENTE JAVASCRIPT -> ANDROID
+     * ==========================================
      */
+
     public class AndroidBridge {
 
         @JavascriptInterface
@@ -719,12 +737,10 @@ public class MainActivity extends Activity {
                     authorizationClient
                             .authorize(request)
                             .addOnSuccessListener(
-                                    result -> {
-
-                                        handleGoogleAuthorizationResult(
-                                                result
-                                        );
-                                    }
+                                    result ->
+                                            handleGoogleAuthorizationResult(
+                                                    result
+                                            )
                             )
                             .addOnFailureListener(
                                     exception -> {
@@ -757,66 +773,144 @@ public class MainActivity extends Activity {
         }
 
         /*
-         * Desconecta/revoca el acceso de Google Drive.
+         * ==========================================
+         * GOOGLE DRIVE - DESCONECTAR
+         * ==========================================
+         *
+         * Revocamos el access token mediante el endpoint
+         * oficial de OAuth de Google.
          */
+
         @JavascriptInterface
         public void disconnectGoogleDrive() {
 
-            runOnUiThread(() -> {
+            final String token =
+                    googleAccessToken;
+
+            if (token == null || token.isEmpty()) {
+
+                sendGoogleDisconnectedToWebView();
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "Google Drive desconectado",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            new Thread(() -> {
+
+                HttpURLConnection connection = null;
 
                 try {
 
-                    RevokeAccessRequest request =
-                            RevokeAccessRequest.builder()
-                                    .setScopes(
-                                            Arrays.asList(
-                                                    new Scope(
-                                                            GOOGLE_DRIVE_SCOPE
-                                                    )
-                                            )
-                                    )
-                                    .build();
-
-                    authorizationClient
-                            .revokeAccess(request)
-                            .addOnSuccessListener(
-                                    unused -> {
-
-                                        sendGoogleDisconnectedToWebView();
-
-                                        Toast.makeText(
-                                                MainActivity.this,
-                                                "Google Drive desconectado",
-                                                Toast.LENGTH_SHORT
-                                        ).show();
-                                    }
-                            )
-                            .addOnFailureListener(
-                                    exception -> {
-
-                                        sendGoogleErrorToWebView(
-                                                exception.getMessage() != null
-                                                        ? exception.getMessage()
-                                                        : "No se pudo desconectar Google Drive."
-                                        );
-                                    }
+                    URL url =
+                            new URL(
+                                    GOOGLE_REVOKE_URL
                             );
+
+                    connection =
+                            (HttpURLConnection)
+                                    url.openConnection();
+
+                    connection.setRequestMethod(
+                            "POST"
+                    );
+
+                    connection.setDoOutput(true);
+
+                    connection.setConnectTimeout(
+                            15000
+                    );
+
+                    connection.setReadTimeout(
+                            15000
+                    );
+
+                    connection.setRequestProperty(
+                            "Content-Type",
+                            "application/x-www-form-urlencoded"
+                    );
+
+                    String body =
+                            "token="
+                                    + URLEncoder.encode(
+                                            token,
+                                            "UTF-8"
+                                    );
+
+                    OutputStream output =
+                            connection.getOutputStream();
+
+                    output.write(
+                            body.getBytes(
+                                    "UTF-8"
+                            )
+                    );
+
+                    output.flush();
+                    output.close();
+
+                    int responseCode =
+                            connection.getResponseCode();
+
+                    runOnUiThread(() -> {
+
+                        /*
+                         * 200 = revocación procesada.
+                         *
+                         * 400 puede indicar que el token
+                         * ya estaba vencido/revocado.
+                         * En ambos casos limpiamos el estado
+                         * local de la aplicación.
+                         */
+
+                        sendGoogleDisconnectedToWebView();
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Google Drive desconectado",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    });
 
                 } catch (Exception e) {
 
-                    sendGoogleErrorToWebView(
-                            e.getMessage() != null
-                                    ? e.getMessage()
-                                    : "No se pudo desconectar Google Drive."
-                    );
+                    runOnUiThread(() -> {
+
+                        /*
+                         * Aunque falle la comunicación,
+                         * eliminamos el token que la app
+                         * tenía en memoria.
+                         */
+                        sendGoogleDisconnectedToWebView();
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Google Drive desconectado",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    });
+
+                } finally {
+
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
                 }
-            });
+
+            }).start();
         }
     }
 
     /*
-     * Procesa el resultado de autorización de Google.
+     * ==========================================
+     * PROCESAR AUTORIZACIÓN DE GOOGLE
+     * ==========================================
      */
+
     private void handleGoogleAuthorizationResult(
             AuthorizationResult result) {
 
@@ -890,6 +984,12 @@ public class MainActivity extends Activity {
         sendGoogleTokenToWebView(token);
     }
 
+    /*
+     * ==========================================
+     * RESULTADOS DE ACTIVIDADES
+     * ==========================================
+     */
+
     @Override
     protected void onActivityResult(
             int requestCode,
@@ -907,6 +1007,7 @@ public class MainActivity extends Activity {
          * RESULTADO DE AUTORIZACIÓN DE GOOGLE
          * ==========================================
          */
+
         if (requestCode == GOOGLE_AUTH_REQUEST) {
 
             if (resultCode != RESULT_OK
@@ -964,8 +1065,11 @@ public class MainActivity extends Activity {
         }
 
         /*
-         * Resultado del selector para RESTAURAR respaldo.
+         * ==========================================
+         * SELECTOR PARA RESTAURAR RESPALDO
+         * ==========================================
          */
+
         if (requestCode == FILE_CHOOSER_REQUEST) {
 
             if (fileChooserCallback == null) {
@@ -984,7 +1088,9 @@ public class MainActivity extends Activity {
                 }
             }
 
-            fileChooserCallback.onReceiveValue(results);
+            fileChooserCallback.onReceiveValue(
+                    results
+            );
 
             fileChooserCallback = null;
 
@@ -992,8 +1098,11 @@ public class MainActivity extends Activity {
         }
 
         /*
-         * Resultado del selector para GUARDAR respaldo.
+         * ==========================================
+         * SELECTOR PARA GUARDAR RESPALDO
+         * ==========================================
          */
+
         if (requestCode == CREATE_FILE_REQUEST) {
 
             if (resultCode == RESULT_OK
@@ -1048,6 +1157,12 @@ public class MainActivity extends Activity {
             pendingFileMime = null;
         }
     }
+
+    /*
+     * ==========================================
+     * BOTÓN ATRÁS
+     * ==========================================
+     */
 
     @Override
     public void onBackPressed() {
