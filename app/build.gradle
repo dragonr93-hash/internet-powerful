@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.internetpowerful.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.internetpowerful.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 45
+        versionName "45.0"
+    }
+}
