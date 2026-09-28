@@ -752,14 +752,46 @@ th{background:#f2eee4;font-weight:800;height:9mm}
 th.p-num,td.p-num{width:9mm}.p-name{width:55mm;text-align:left}.p-name small{display:block;color:#666;font-size:7pt;margin-top:1mm}.p-cell span{display:block;width:5.2mm;height:5.2mm;border:1.2px solid #444;border-radius:50%;margin:auto}.p-empty{height:18mm;color:#666}.p-foot{font-size:7pt;color:#666;margin-top:2mm}
 </style>`}
   function openPrint(days){
-    if(!days.length)return alert('No hay fechas de pago para imprimir.');
-    const y=Number(pyear.value)||new Date().getFullYear();
-    printDoc.innerHTML=printCss()+days.map(d=>pageForDay(d,y)).join('');
-    document.body.classList.add('printing-pdf');
-    const cleanup=()=>{document.body.classList.remove('printing-pdf');printDoc.innerHTML='';window.removeEventListener('afterprint',cleanup)};
-    window.addEventListener('afterprint',cleanup);
-    setTimeout(()=>window.print(),150);
-  }
+  if(!days.length)return alert('No hay fechas de pago para imprimir.');
+
+  const y=Number(pyear.value)||new Date().getFullYear();
+
+  // Generar el documento de impresión y mantenerlo vivo
+  // mientras Android muestra la vista preliminar.
+  printDoc.innerHTML=printCss()+days.map(d=>pageForDay(d,y)).join('');
+
+  document.body.classList.add('printing-pdf');
+
+  let printFinished=false;
+  let cleanupTimer=null;
+
+  const cleanup=()=>{
+    if(!printFinished)return;
+
+    clearTimeout(cleanupTimer);
+    window.removeEventListener('focus',cleanup);
+
+    document.body.classList.remove('printing-pdf');
+    printDoc.innerHTML='';
+  };
+
+  // En Android no usamos "afterprint" porque puede dispararse
+  // antes de que el usuario termine de configurar la impresión.
+  const handleFocus=()=>{
+    printFinished=true;
+
+    // Pequeña espera para evitar que Android limpie el contenido
+    // mientras todavía está reconstruyendo la vista preliminar.
+    cleanupTimer=setTimeout(cleanup,500);
+  };
+
+  window.addEventListener('focus',handleFocus);
+
+  // Esperar a que el DOM de impresión esté completamente preparado.
+  setTimeout(()=>{
+    window.print();
+  },150);
+}
   pyear.innerHTML='';printYears();refreshPrintDays();
   document.getElementById('printSelectedList').onclick=()=>openPrint([Number(pday.value)]);
   document.getElementById('printAllLists').onclick=()=>{if(confirm(`Se prepararán ${DAYS.length} listas, una por cada fecha de pago. ¿Continuar?`))openPrint(DAYS.slice())};
