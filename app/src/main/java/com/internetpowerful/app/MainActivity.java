@@ -1,11 +1,18 @@
 package com.internetpowerful.app;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.Manifest;
 import android.print.PrintManager;
 import android.print.PrintDocumentAdapter;
 import android.util.Base64;
@@ -50,6 +57,17 @@ public class MainActivity extends Activity {
 
     /*
      * ==========================================
+     * NOTIFICACIONES DE COMPROMISOS DE PAGO
+     * ==========================================
+     */
+
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 2001;
+
+    private static final String COMMITMENT_CHANNEL_ID = "commitments";
+
+
+    /*
+     * ==========================================
      * GOOGLE DRIVE
      * ==========================================
      */
@@ -82,6 +100,8 @@ public class MainActivity extends Activity {
          */
         authorizationClient =
                 Identity.getAuthorizationClient(this);
+
+        createCommitmentNotificationChannel();
 
         webView = new WebView(this);
         setContentView(webView);
@@ -490,6 +510,93 @@ public class MainActivity extends Activity {
 
     /*
      * ==========================================
+     * NOTIFICACIONES NATIVAS DE COMPROMISOS
+     * ==========================================
+     */
+
+    private void createCommitmentNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    COMMITMENT_CHANNEL_ID,
+                    "Compromisos de pago",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+
+            channel.setDescription(
+                    "Recordatorios de las fechas y horas prometidas por los clientes."
+            );
+            channel.enableVibration(true);
+
+            NotificationManager manager =
+                    getSystemService(NotificationManager.class);
+
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    private void requestCommitmentNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    NOTIFICATION_PERMISSION_REQUEST
+            );
+        }
+    }
+
+    private void scheduleCommitmentNative(
+            String clientId,
+            String clientName,
+            String date,
+            String time,
+            String note
+    ) {
+        if (clientId == null || clientId.trim().isEmpty()) {
+            return;
+        }
+
+        if (date == null || date.trim().isEmpty()) {
+            return;
+        }
+
+        if (time == null || time.trim().isEmpty()) {
+            time = "09:00";
+        }
+
+        createCommitmentNotificationChannel();
+
+        CommitmentReminderReceiver.schedule(
+                this,
+                clientId,
+                clientName != null ? clientName : "Cliente",
+                date,
+                time,
+                note != null ? note : ""
+        );
+
+        requestCommitmentNotificationPermission();
+
+        Toast.makeText(
+                MainActivity.this,
+                "🔔 Recordatorio programado para " + time,
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    private void cancelCommitmentNative(String clientId) {
+        if (clientId == null || clientId.trim().isEmpty()) {
+            return;
+        }
+
+        CommitmentReminderReceiver.cancel(this, clientId);
+    }
+
+    /*
+     * ==========================================
      * GOOGLE DRIVE - RESPUESTAS AL JAVASCRIPT
      * ==========================================
      */
@@ -710,6 +817,40 @@ public class MainActivity extends Activity {
                 }
 
             });
+        }
+
+        /*
+         * ==========================================
+         * NOTIFICACIONES DE COMPROMISOS DE PAGO
+         * ==========================================
+         */
+
+        @JavascriptInterface
+        public void scheduleCommitmentReminder(
+                final String clientId,
+                final String clientName,
+                final String date,
+                final String time,
+                final String note
+        ) {
+            runOnUiThread(() ->
+                    scheduleCommitmentNative(
+                            clientId,
+                            clientName,
+                            date,
+                            time,
+                            note
+                    )
+            );
+        }
+
+        @JavascriptInterface
+        public void cancelCommitmentReminder(
+                final String clientId
+        ) {
+            runOnUiThread(() ->
+                    cancelCommitmentNative(clientId)
+            );
         }
 
         /*
