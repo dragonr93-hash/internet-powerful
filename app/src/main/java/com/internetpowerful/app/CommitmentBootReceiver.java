@@ -1,4 +1,3 @@
-
 package com.internetpowerful.app;
 
 import android.content.BroadcastReceiver;
