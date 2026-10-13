@@ -622,10 +622,18 @@ function setGoogleStatus(text,cls){
       : 'Sin respaldo en Google Drive.';
   }
 }
+function hasNativeGoogleBridge(){
+  return !!(window.Android && typeof window.Android.requestGoogleDriveToken==='function');
+}
+function isSecureWebOrigin(){
+  return location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1';
+}
 function googleReady(){
-  return !!(googleCfg.clientId && googleTokenClient);
+  return hasNativeGoogleBridge() || !!(googleCfg.clientId && googleTokenClient);
 }
 function ensureGoogleScript(){
+  if(hasNativeGoogleBridge())return Promise.resolve();
+  if(!isSecureWebOrigin())return Promise.reject(new Error('Google bloquea la autorización desde un HTML abierto como archivo local. Para usar Google Drive en el navegador, abre Internet Powerful desde una dirección HTTPS segura. En la app instalada debe usarse la autorización nativa de Android.'));
   return new Promise((resolve,reject)=>{
     if(window.google&&google.accounts&&google.accounts.oauth2)return resolve();
     const start=Date.now();
@@ -636,8 +644,9 @@ function ensureGoogleScript(){
   });
 }
 function initGoogleClient(){
+  if(hasNativeGoogleBridge())return Promise.resolve();
   return ensureGoogleScript().then(()=>{
-    if(!googleCfg.clientId)throw new Error('Falta el Client ID de Google.');
+    if(!googleCfg.clientId)throw new Error('Falta el Client ID web de Google.');
     googleTokenClient=google.accounts.oauth2.initTokenClient({
       client_id:googleCfg.clientId,
       scope:GOOGLE_SCOPE,
@@ -656,12 +665,31 @@ function initGoogleClient(){
     });
   });
 }
+window.onAndroidGoogleDriveToken=function(token){
+  if(!token){window.onAndroidGoogleDriveError('Google no entregó un token de acceso.');return;}
+  googleToken=token;
+  setGoogleStatus('🟢 Conectado a Google Drive','google-ok');
+  googleTokenWaiters.splice(0).forEach(r=>r.resolve(token));
+};
+window.onAndroidGoogleDriveError=function(message){
+  const err=new Error(message||'No se pudo autorizar Google Drive.');
+  googleTokenWaiters.splice(0).forEach(r=>r.reject(err));
+  setGoogleStatus('🔴 No conectado','google-warn');
+};
+window.onAndroidGoogleDriveDisconnected=function(){
+  googleToken='';
+  googleTokenWaiters.splice(0).forEach(r=>r.reject(new Error('Google Drive desconectado.')));
+  setGoogleStatus('No conectado','google-warn');
+};
 function requestGoogleToken(interactive=true){
   return new Promise((resolve,reject)=>{
     if(googleToken){resolve(googleToken);return}
     googleTokenWaiters.push({resolve,reject});
-    try{googleTokenClient.requestAccessToken({prompt:interactive?'consent':''})}
-    catch(e){googleTokenWaiters.pop();reject(e)}
+    try{
+      if(hasNativeGoogleBridge())window.Android.requestGoogleDriveToken();
+      else if(googleTokenClient)googleTokenClient.requestAccessToken({prompt:interactive?'consent':''});
+      else {googleTokenWaiters.pop();reject(new Error('Google Drive no está inicializado.'));}
+    }catch(e){googleTokenWaiters.pop();reject(e)}
   });
 }
 async function googleFetch(url,opts={}){
@@ -700,7 +728,7 @@ async function findGoogleBackup(){
 }
 async function uploadGoogleBackup(silent=false){
   if(googleBusy)return;
-  if(!googleCfg.clientId)return;
+  if(!hasNativeGoogleBridge()&&!googleCfg.clientId)return;
   googleBusy=true;
   try{
     await initGoogleClient();
@@ -736,7 +764,7 @@ async function uploadGoogleBackup(silent=false){
   }finally{googleBusy=false}
 }
 async function restoreGoogleBackup(){
-  if(!googleCfg.clientId)return alert('Primero agrega el Client ID de Google.');
+  if(!hasNativeGoogleBridge()&&!googleCfg.clientId)return alert('Primero agrega el Client ID web de Google.');
   if(!confirm('¿Restaurar la información guardada en Google Drive? Los datos actuales de esta aplicación serán reemplazados por la copia.'))return;
   try{
     await initGoogleClient();
@@ -778,9 +806,9 @@ async function restoreGoogleBackup(){
 }
 $('googleConnect').onclick=async()=>{
   const id=$('googleClientId').value.trim();
-  if(!id)return alert('Primero escribe el Client ID de Google OAuth 2.0.');
-  googleCfg.clientId=id;
-  saveGoogleCfg();
+  if(!hasNativeGoogleBridge()&&!id)return alert('Primero escribe el Client ID web de Google OAuth 2.0.');
+  if(!hasNativeGoogleBridge()&&!isSecureWebOrigin())return alert('Google bloquea la autorización desde un HTML abierto como archivo local. Para conectar desde el navegador, debes abrirlo desde una dirección HTTPS segura. En la app instalada se usa la autorización nativa de Android.');
+  if(id){googleCfg.clientId=id;saveGoogleCfg();}
   try{
     await initGoogleClient();
     await requestGoogleToken(true);
@@ -792,7 +820,9 @@ $('googleConnect').onclick=async()=>{
   }
 };
 $('googleDisconnect').onclick=()=>{
-  if(googleToken&&window.google&&google.accounts&&google.accounts.oauth2){
+  if(hasNativeGoogleBridge()){
+    try{window.Android.disconnectGoogleDrive()}catch(e){}
+  }else if(googleToken&&window.google&&google.accounts&&google.accounts.oauth2){
     try{google.accounts.oauth2.revoke(googleToken,()=>{})}catch(e){}
   }
   googleToken='';
@@ -810,7 +840,7 @@ $('googleClientId').onchange=e=>{
   saveGoogleCfg();
 };
 function scheduleGoogleAutoBackup(){
-  if(!googleCfg.auto||!googleCfg.clientId)return;
+  if(!googleCfg.auto||(!hasNativeGoogleBridge()&&!googleCfg.clientId))return;
   clearTimeout(googleBackupTimer);
   googleBackupTimer=setTimeout(()=>uploadGoogleBackup(true),8000);
 }
