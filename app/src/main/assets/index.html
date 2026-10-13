@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Internet Powerful V45</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{--navy:#101a2c;--blue:#0b79f7;--ink:#142033;--muted:#687385;--paper:#fffefa;--grid:#d9e1e9;--head:#f5f0e4;--green:#bfecc8;--green2:#2da84a;--yellow:#ffe18b;--yellow2:#e1a900;--gray:#edf0f2;--line:#c8ced6;--danger:#ffdada;--danger2:#b42318}
 *{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:Arial,Helvetica,sans-serif;background:#f3f6f9;color:var(--ink)}button,input,select,textarea{font:inherit}.location-field{grid-column:1/-1}.location-input-wrap{position:relative;width:100%;margin-top:2px}.location-input-wrap input{width:100%;min-height:62px;padding-right:72px;font-size:1.08em}.location-input-wrap select{position:absolute;right:1px;top:1px;width:62px;height:60px;padding:0 8px;border:0;border-left:1px solid #d5dbe3;border-radius:0 10px 10px 0;background:#fff;font-weight:900;font-size:1.15em;color:#142033;text-align:center;cursor:pointer}.location-input-wrap select:focus{outline:2px solid #0b79f7;outline-offset:-2px}.location-suggestions{position:relative;z-index:100;width:100%;margin-top:6px;background:#fff;border:1px solid #d5dbe3;border-radius:0 0 10px 10px;box-shadow:0 8px 18px rgba(0,0,0,.12);overflow:hidden}.location-suggestion{display:block;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #edf0f3;background:#fff;text-align:left;font:inherit;color:#142033;cursor:pointer}.location-suggestion:last-child{border-bottom:0}.location-suggestion:hover{background:#f2f7ff}.location-help{display:block;margin-top:6px;color:#667085;font-size:.88em;line-height:1.25}button{cursor:pointer}
@@ -11,6 +12,39 @@ header{background:var(--navy);color:#fff;padding:18px 24px 16px;display:flex;ali
 main{max-width:1500px;margin:auto;padding:18px}.page{display:none}.page.active{display:block}.topline{display:flex;align-items:center;gap:12px;margin-bottom:12px}.back{width:58px;height:48px;border:1px solid #d3d8df;border-radius:10px;background:#fff;font-size:30px}.topline h2{font-size:30px;margin:0}.filters{margin-left:auto;display:flex;gap:10px}.select{padding:12px 14px;border:1px solid #cfd5dc;border-radius:10px;background:#fff;font-weight:700}.searchbar{display:flex;gap:12px;margin-bottom:12px}.search{flex:1;padding:14px 18px;border:1px solid #cbd2da;border-radius:10px;background:#fff;font-size:18px}.btn{border:1px solid #cbd2da;border-radius:10px;background:#fff;padding:12px 18px;font-weight:800}.btn.green{background:#e3fae8;color:#146c32;border-color:#a7dfb4}.btn.yellow{background:#fff2bf;color:#7d5700;border-color:#e7cf72}.btn.blue{background:#087ff5;color:#fff;border-color:#087ff5}.btn.danger{background:#ffe3e3;color:#a31d16;border-color:#efb4b0}.legend{display:flex;gap:10px;margin:8px 0 14px;flex-wrap:wrap}.legend span{background:#fff;border:1px solid #d0d5db;border-radius:9px;padding:8px 14px;font-weight:700}.arrears-trigger{cursor:pointer;transition:.15s;display:inline-flex!important;align-items:center}.arrears-trigger:hover{transform:translateY(-1px);box-shadow:0 2px 6px #0001}.arrears-trigger:active{transform:scale(.98)}.arrears-one{background:#fff8d8!important;border-color:#ead16c!important;color:#785300}.arrears-two{background:#ffe7e7!important;border-color:#e06b6b!important;color:#a31d16}.dot{display:inline-block;width:22px;height:22px;border-radius:50%;vertical-align:-5px;margin-right:6px;border:1px solid #aaa}.dot.empty{background:#edf0f2}.dot.paid{background:#70bb36;border-color:#5ba72b}.dot.pending{background:#ffc21c;border-color:#e3a900}
 .actions{border:1px solid #a9cff7;background:#edf7ff;border-radius:10px;padding:14px;margin-bottom:12px}.actions h3{margin:0 0 10px;color:#164a93}.action-row{display:flex;gap:10px;flex-wrap:wrap}.action-row .btn{min-height:52px}.select-row{display:flex;gap:20px;align-items:center;margin-top:12px;flex-wrap:wrap}.checklabel{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px}.checklabel input,.clientcheck{width:21px;height:21px;accent-color:#087ff5}.count-pill{margin-left:auto;background:#dceeff;border-radius:18px;padding:8px 14px;font-weight:700;color:#1b5ca9}.summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.summary .stat{background:#fff;border:1px solid #d1d6dc;border-radius:9px;padding:9px 14px;font-size:16px}.summary b{font-size:18px}
 .grid-wrap{overflow:auto;background:#fff;border-top:3px solid #20252c;border-left:1px solid #c8ced6}.grid{width:max-content;min-width:100%}.row{display:grid;grid-template-columns:160px repeat(12,55px) 190px;min-height:64px}.row>div{border-right:1px solid #c8ced6;border-bottom:1px solid #c8ced6;display:flex;align-items:center;justify-content:center}.head{min-height:48px;background:var(--head);font-weight:800;position:relative;z-index:2}.head .name{justify-content:flex-start}.name{justify-content:flex-start!important;padding:5px 6px;gap:6px;position:sticky;left:0;z-index:4;background:#fff};.name.arrears-yellow{background:#fff3a6!important}.name.arrears-red{background:#ffc7c7!important}.head .name{background:var(--head);z-index:7}.grid .row:not(.head)>.name{box-shadow:3px 0 6px -5px #0006}.namebox{display:flex;align-items:center;gap:5px;min-width:0;width:100%}.namebox>span:last-child{min-width:0;flex:1}.client-info{display:flex;flex-direction:column;align-items:flex-start;min-width:0}.num{width:26px;height:26px;border:2px solid #333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;margin-bottom:2px}.name-text{font-size:15px;font-weight:800;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.02;display:block;max-width:92px}.hide-extra .name-sub{display:none}.name-sub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.month{padding:7px}.month.current-col{background:#e3f4ff}.mark{width:34px;height:34px;border-radius:50%;border:2px solid #c7cbd0;background:#edf0f2;display:flex;align-items:center;justify-content:center;padding:0;font-size:0}.mark:after{content:'';width:22px;height:22px;border-radius:50%;background:#dfe4e8}.mark.paid{border-color:#4f9e32;background:#b9eebf}.mark.paid:after{background:#65bd32}.mark.pending{border-color:#d29b00;background:#ffe18b}.mark.pending:after{background:#ffc21c}.mark.current{box-shadow:0 0 0 3px #1593ef44}.actions-cell{padding:5px;display:flex!important;flex-direction:column;gap:5px;align-items:stretch!important}.row-btn{border:1px solid #ccd2d9;border-radius:7px;padding:6px 7px;font-size:11px;font-weight:800;white-space:nowrap}.row-paid{background:#e5f9e9;color:#187039;border-color:#a8deb1}.row-pending{background:#fff0a8;color:#785300;border-color:#ead16c}.row-clear{background:#f3f6f8;color:#25313f}.row-save{background:#087ff5;color:#fff;border-color:#087ff5}.row.dirty .row-save{box-shadow:0 0 0 3px #087ff555}.row-status{font-size:10px;color:#9b6500;min-height:12px}.arrears-modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;padding:16px;z-index:2000}.arrears-modal.show{display:flex}.arrears-modalbox{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 18px 50px #0005;border:1px solid #d6dbe2}.arrears-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #dfe4ea}.arrears-modal-head h2{margin:0;font-size:22px}.arrears-modal-head.one{background:#fff8d8;color:#785300}.arrears-modal-head.two{background:#ffe7e7;color:#a31d16}.arrears-modal-close{border:0;background:transparent;font-size:30px;line-height:1;cursor:pointer}.arrears-modal-total{font-size:14px;font-weight:700;margin-top:3px}.arrears-table-wrap{overflow:auto;padding:12px 16px 16px}.arrears-table{width:100%;border-collapse:collapse;min-width:520px}.arrears-table th,.arrears-table td{border:1px solid #d9e0e7;padding:9px 8px;text-align:left}.arrears-table th{background:#eef6ff;font-weight:800}.arrears-table td:first-child,.arrears-table th:first-child{text-align:center;width:42px}.arrears-wa{white-space:nowrap}.arrears-note{margin:0 16px 16px;padding:10px 12px;background:#eef7ff;border:1px solid #b9dafa;border-radius:9px;color:#1558a6}.arrears-modal-foot{display:flex;justify-content:flex-end;padding:0 16px 16px}.arrears-modal-foot .btn{min-width:110px}.pending-report{margin:12px 0 16px;border:1px solid #ead16c;background:#fffaf0;border-radius:12px;padding:14px;box-shadow:0 2px 8px #0000000d}.pending-report[hidden]{display:none}.pending-report-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.pending-report-head h3{margin:0;color:#785300}.pending-list{display:flex;flex-direction:column;gap:8px}.pending-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #e3d6a5;border-radius:9px;padding:10px 12px}.pending-item .pending-name{font-weight:800}.pending-item .pending-meta{font-size:12px;color:#6a7380;margin-top:2px}.pending-total{font-weight:800;margin-top:10px;color:#785300}.pending-empty{padding:12px;background:#fff;border:1px solid #d1d6dc;border-radius:9px;color:#68717c}.clickable-stat{cursor:pointer;text-align:left;transition:.15s}.clickable-stat:active{transform:scale(.98)}.footer-note{color:#6a7380;font-size:13px;margin:12px 0}
+.home-pending-stat{width:100%;font:inherit;cursor:pointer;text-align:left;border:1px solid #e5a0a0!important;background:linear-gradient(135deg,#fff0f0,#ffe0d7)!important;color:#9f241b!important;box-shadow:0 2px 7px #b4231812;transition:transform .15s,box-shadow .15s}
+.home-pending-stat b{color:#b42318;font-size:26px}
+.home-pending-stat:active{transform:scale(.985)}
+.home-pending-stat:focus-visible{outline:3px solid #087ff5;outline-offset:2px}
+.global-pending-modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:12px;z-index:2100}
+.global-pending-modal.show{display:flex}
+.global-pending-box{width:min(980px,100%);max-height:94vh;overflow:auto;background:#f7f9fc;border-radius:16px;box-shadow:0 18px 50px #0005}
+.global-pending-head{position:sticky;top:0;z-index:2;background:#fff0f0;border-bottom:1px solid #efc1be;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.global-pending-head h2{margin:0;color:#9f241b;font-size:21px}
+.global-pending-close{border:0;background:transparent;font-size:30px;line-height:1;color:#7f1d1d}
+.global-pending-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 14px}
+.global-pending-summary>div{background:#fff;border:1px solid #d7dde5;border-radius:10px;padding:10px}
+.global-pending-summary b{display:block;font-size:19px;margin-top:3px}
+.global-pending-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 14px 12px}
+.global-pending-filter{border:1px solid #cbd5df;border-radius:10px;padding:12px 10px;background:#fff;color:#344054;font-weight:800;line-height:1.25;min-height:54px}
+.global-pending-filter.active-month{background:#fff0e6;border-color:#f2a36f;color:#9a3412;box-shadow:0 0 0 2px #f973161a}
+.global-pending-filter.active-all{background:#e8f2ff;border-color:#8bbaf5;color:#164a93;box-shadow:0 0 0 2px #087ff51a}
+.global-pending-filter:focus-visible{outline:3px solid #087ff5;outline-offset:2px}
+.global-pending-help{margin:0 14px 12px;padding:10px 12px;border-radius:9px;background:#edf7ff;border:1px solid #c3def8;color:#174f86;font-size:13px}
+.global-pending-list{display:grid;gap:10px;padding:0 12px 14px}
+.global-pending-client{background:#fff;border:1px solid #d7dde5;border-radius:12px;padding:12px}
+.global-pending-client-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.global-pending-client-main{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0;flex:1}.global-pending-client-info{min-width:0;flex:1}.global-pending-client-tools{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}.global-pending-dismiss{border:0;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:22px;font-weight:900;line-height:1;padding:4px 9px;cursor:pointer}.global-pending-dismiss:active{transform:scale(.96)}
+.global-pending-client-name{font-weight:800;font-size:16px;overflow-wrap:anywhere}
+.global-pending-meta{font-size:12px;color:#687385;margin-top:3px}
+.global-pending-debt{text-align:right;white-space:nowrap;color:#a31d16;font-weight:800}
+.global-pending-month-picker{padding:0 14px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.global-pending-month-picker label{font-size:14px;font-weight:800;color:#354052}.global-pending-month-picker select{width:auto;min-width:150px;max-width:100%;margin:0;padding:10px 12px;border:1px solid #cbd2da;border-radius:9px;background:#fff;font-weight:700}.global-pending-months{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}
+.global-month-btn{min-width:0;border:1px solid #cfd5dc;border-radius:8px;background:#f1f3f5;color:#354052;padding:8px 5px;font-size:12px;font-weight:800}
+.global-month-btn.paid{background:#e3fae8;border-color:#a7dfb4;color:#146c32}
+.global-month-btn.pending{background:#fff0c2;border-color:#e7cf72;color:#795600}
+.global-month-btn:focus-visible{outline:2px solid #087ff5;outline-offset:1px}
+.global-pending-empty{background:#fff;border:1px dashed #cbd2da;border-radius:10px;padding:18px;text-align:center;color:#687385}
+@media(max-width:520px){.global-pending-summary{grid-template-columns:1fr 1fr}.global-pending-months{grid-template-columns:repeat(3,minmax(0,1fr))}.global-pending-client-head{align-items:flex-start}.global-pending-debt{font-size:13px}}
+
 .floating-head{position:fixed;top:0;left:0;right:auto;width:0;z-index:1000;display:none;overflow:hidden;background:var(--head);box-shadow:0 3px 10px #0003;border-bottom:2px solid #20252c;pointer-events:none}
 .floating-head .floating-inner{display:grid;grid-template-columns:160px repeat(12,55px) 190px;width:max-content;min-height:48px;transform:translateX(0)}
 .floating-head .floating-inner>div{border-right:1px solid #c8ced6;display:flex;align-items:center;justify-content:center;font-weight:800;min-height:48px}
@@ -95,8 +129,8 @@ header,main{width:100%;max-width:100%}.brand{min-width:0}.nav{min-width:0}.page{
 <body>
 <header><div class="brand"><div class="globe">🌐</div><div><h1>Internet Powerful</h1><small>Libreta digital de clientes y cobranza</small></div></div><nav class="nav"><button data-page="inicio"><span>⌂</span><small>Inicio</small></button><button data-page="clientes"><span>👥</span><small>Clientes</small></button><button data-page="empresa"><span>🏢</span><small>Empresa</small></button><button data-page="respaldos"><span>☁️</span><small>Respaldos</small></button><button data-page="ajustes"><span>⚙️</span><small>Ajustes</small></button></nav></header>
 <main>
-<section id="inicio" class="page active"><div class="card"><h2>📒 Libreta de cobranza</h2><p class="small">Cada fecha de cobro es una página. En cada página puedes revisar los 12 meses de cada cliente.</p><div id="dates" class="date-grid"></div></div><div class="stats"><div class="stat"><span class="small">Clientes</span><b id="totalClients">0</b></div><div class="stat"><span class="small">Total mensual</span><b id="totalMoney">$0</b></div><div class="stat"><span class="small">Pagado este mes</span><b id="paidMoney">$0</b></div><div class="stat"><span class="small">Pendiente este mes</span><b id="pendingMoney">$0</b></div></div><div class="tools"><button class="btn blue" id="importOpen">📥 Pegar lista completa</button><button class="btn" id="newClient">➕ Nuevo cliente</button></div></section>
-<section id="cobranza" class="page"><div class="topline"><button class="back" data-page="inicio">‹</button><h2>Cobranza — Día <span id="dayTitle">08</span></h2><div class="filters"><select id="yearSelect" class="select"></select><select id="monthCurrent" class="select"></select></div></div><div class="searchbar"><input id="searchDay" class="search" placeholder="🔎  Buscar cliente..."><button class="btn green" id="newClientDay">＋ Agregar cliente</button></div><div class="legend"><span><i class="dot empty"></i>Sin marca</span><span><i class="dot paid"></i>Pagado</span><span><i class="dot pending"></i>Pendiente</span><button type="button" class="arrears-trigger arrears-one" id="arrearsOneBtn"><i class="dot" style="background:#fff3a6;border:1px solid #ead16c"></i>1 pendiente <b id="arrearsOneCount">(0 clientes)</b> ›</button><button type="button" class="arrears-trigger arrears-two" id="arrearsTwoBtn"><i class="dot" style="background:#ffc7c7;border:1px solid #e06b6b"></i>2+ pendientes <b id="arrearsTwoCount">(0 clientes)</b> ›</button></div><div class="actions"><h3>Acciones generales (todos los clientes)</h3><div class="action-row"><button class="btn green" id="allPaid">🟢 Marcar todos los meses como pagados</button><button class="btn yellow" id="allPending">🟡 Marcar todos los meses como pendientes</button><button class="btn" id="clearAllMonths">⚪ Desmarcar todos los meses</button><button class="btn danger" id="deleteSelected">🗑️ Dar de baja seleccionados</button><button class="btn blue" id="saveAllChangesTop">💾 Guardar todos los cambios</button></div><div class="select-row"><label class="checklabel"><input id="selectAll" type="checkbox"> Seleccionar todos</label><div class="month-current-actions"><button class="btn green" id="markMonthCurrent">🟢 Marcar mes actual (<span id="currentMonthLabel">Sep</span>)</button><button class="btn yellow" id="pendingMonthCurrent">🟡 Marcar mes actual como pendiente (<span id="currentMonthLabel3">Sep</span>)</button><button class="btn" id="clearMonth">⚪ Desmarcar mes actual (<span id="currentMonthLabel2">Sep</span>)</button></div><span id="selectedCount" class="count-pill">0 seleccionados</span></div></div><div id="yearSummary" class="summary"></div><div id="pendingReport" class="pending-report" hidden><div class="pending-report-head"><h3>🟡 Clientes que faltan por pagar</h3><button class="btn" id="closePendingReport">Cerrar</button></div><div id="pendingReportList"></div></div><div class="grid-wrap"><div class="grid"><div class="row head"><div class="name"># &nbsp; CLIENTE</div><div>Ene</div><div>Feb</div><div>Mar</div><div>Abr</div><div>May</div><div>Jun</div><div>Jul</div><div>Ago</div><div id="headSep">Sep</div><div>Oct</div><div>Nov</div><div>Dic</div><div>ACCIONES</div></div><div id="gridBody"></div></div></div><div id="floatingHead" class="floating-head"><div class="floating-inner"></div></div><div class="tools" style="justify-content:center;margin:14px 0;"><button class="btn blue" id="saveAllChangesBottom">💾 Guardar todos los cambios</button></div><p class="footer-note">Toca una casilla para cambiarla: ⚪ → 🟢 Pagado → 🟡 Pendiente → ⚪. Los cambios de cada cliente se guardan al pulsar <b>💾 Guardar</b> en su propia fila. Los botones de fila permiten marcar, desmarcar o guardar los 12 meses de ese cliente.</p></section>
+<section id="inicio" class="page active"><div class="card"><h2>📒 Libreta de cobranza</h2><p class="small">Cada fecha de cobro es una página. En cada página puedes revisar los 12 meses de cada cliente.</p><div id="dates" class="date-grid"></div></div><div class="stats"><div class="stat"><span class="small">Clientes</span><b id="totalClients">0</b></div><div class="stat"><span class="small">Total mensual</span><b id="totalMoney">$0</b></div><div class="stat"><span class="small">Pagado este mes</span><b id="paidMoney">$0</b></div><button type="button" class="stat clickable-stat home-pending-stat" id="pendingMoneyButton" aria-label="Ver clientes pendientes del mes y morosos"><span class="small">🟠 Pendiente este mes · Ver lista</span><b id="pendingMoney">$0</b><small class="small">Incluye clientes con 2 o más meses atrasados</small></button></div><div class="tools"><button class="btn blue" id="importOpen">📥 Pegar lista completa</button><button class="btn" id="newClient">➕ Nuevo cliente</button></div></section>
+<section id="cobranza" class="page"><div class="topline"><button class="back" data-page="inicio">‹</button><h2>Cobranza — Día <span id="dayTitle">08</span></h2><div class="filters"><select id="yearSelect" class="select"></select><select id="monthCurrent" class="select"></select></div></div><div class="searchbar"><input id="searchDay" class="search" placeholder="🔎  Buscar cliente..."><button class="btn green" id="newClientDay">＋ Agregar cliente</button></div><div class="legend"><span><i class="dot empty"></i>Sin marca</span><span><i class="dot paid"></i>Pagado</span><span><i class="dot pending"></i>Pendiente</span><button type="button" class="arrears-trigger arrears-one" id="arrearsOneBtn"><i class="dot" style="background:#fff3a6;border:1px solid #ead16c"></i>1 pendiente <b id="arrearsOneCount">(0 clientes)</b> ›</button><button type="button" class="arrears-trigger arrears-two" id="arrearsTwoBtn"><i class="dot" style="background:#ffc7c7;border:1px solid #e06b6b"></i>2+ pendientes <b id="arrearsTwoCount">(0 clientes)</b> ›</button></div><div class="actions"><h3>Acciones generales (todos los clientes)</h3><div class="action-row"><button class="btn green" id="allPaid">🟢 Marcar todos los meses como pagados</button><button class="btn yellow" id="allPending">🟡 Marcar todos los meses como pendientes</button><button class="btn" id="clearAllMonths">⚪ Desmarcar todos los meses</button><button class="btn danger" id="deleteSelected">🗑️ Dar de baja seleccionados</button></div><div class="select-row"><label class="checklabel"><input id="selectAll" type="checkbox"> Seleccionar todos</label><div class="month-current-actions"><button class="btn green" id="markMonthCurrent">🟢 Marcar mes actual (<span id="currentMonthLabel">Sep</span>)</button><button class="btn yellow" id="pendingMonthCurrent">🟡 Marcar mes actual como pendiente (<span id="currentMonthLabel3">Sep</span>)</button><button class="btn" id="clearMonth">⚪ Desmarcar mes actual (<span id="currentMonthLabel2">Sep</span>)</button></div><span id="selectedCount" class="count-pill">0 seleccionados</span></div></div><div id="yearSummary" class="summary"></div><div id="pendingReport" class="pending-report" hidden><div class="pending-report-head"><h3>🟡 Clientes que faltan por pagar</h3><button class="btn" id="closePendingReport">Cerrar</button></div><div id="pendingReportList"></div></div><div class="grid-wrap"><div class="grid"><div class="row head"><div class="name"># &nbsp; CLIENTE</div><div>Ene</div><div>Feb</div><div>Mar</div><div>Abr</div><div>May</div><div>Jun</div><div>Jul</div><div>Ago</div><div id="headSep">Sep</div><div>Oct</div><div>Nov</div><div>Dic</div><div>ACCIONES</div></div><div id="gridBody"></div></div></div><div id="floatingHead" class="floating-head"><div class="floating-inner"></div></div><p class="footer-note">Toca una casilla para cambiarla: ⚪ → 🟢 Pagado → 🟡 Pendiente → ⚪. Los cambios de cada cliente se guardan al pulsar <b>💾 Guardar</b> en su propia fila. Los botones de fila permiten marcar, desmarcar o guardar los 12 meses de ese cliente.</p></section>
 <section id="clientes" class="page"><div class="card"><div class="topline"><h2>👥 Clientes</h2><button class="btn danger-outline" id="openTrash">🗑️ Papelera <span id="trashCount">0</span></button></div><div class="tools"><input id="searchClients" placeholder="Buscar nombre, celular, IP o localidad"><select id="filterDay"><option value="">📅 Todas las fechas de pago</option></select><select id="filterLocation" class="select"><option value="">📍 Todas las localidades</option></select><select id="filterMonth" class="select"><option value="">📅 Todos los meses</option></select><select id="filterYear" class="select"><option value="">📆 Todos los años</option></select><select id="filterStatus"><option value="">Todos los estados</option><option value="paid">🟢 Pagado</option><option value="pending">🟡 Pendiente</option></select></div><div id="allClients" class="client-list"></div></div><div class="card" id="commitmentsPanel"><div class="topline"><h2>🤝 Compromisos de pago</h2><span id="commitmentsCount" class="small">0 pendientes</span></div><p class="small">Aquí aparecen los clientes que te indicaron una fecha futura en la que pagarán.</p><div id="commitmentsList" class="commitment-list"></div></div><div class="card" id="trashPanel" hidden><div class="topline"><h2>🗑️ Papelera de reciclaje</h2><button class="btn" id="closeTrash">Cerrar</button></div><p class="small">Los clientes dados de baja permanecen aquí hasta que los restaures o los elimines definitivamente.</p><div id="trashList"></div></div></section>
 <section id="empresa" class="page"><div class="card"><h2>🏢 Empresa</h2><div class="form"><label>Nombre<input id="companyName"></label><label>WhatsApp<input id="companyPhone"></label><label class="full">Dirección<input id="companyAddress"></label><label class="full">Mensaje<textarea id="template"></textarea></label></div><p class="small">Variables: {cliente} {monto} {dia} {mes} {empresa}</p><div class="tools"><button class="btn blue" id="saveCompany">💾 Guardar</button><button class="btn" id="defaultTemplate">Restaurar mensaje</button></div></div></section>
 <section id="respaldos" class="page">
@@ -115,10 +149,9 @@ header,main{width:100%;max-width:100%}.brand{min-width:0}.nav{min-width:0}.page{
     </div>
   </div>
   <div class="google-backup-grid">
-    <div class="google-status">
-      <strong>🔐 Autorización de Google</strong>
-      <div class="small">La aplicación utilizará la autorización nativa de Android. No necesitas escribir ningún Client ID.</div>
-    </div>
+    <label>ID de cliente de Google (OAuth 2.0)
+      <input id="googleClientId" placeholder="1234567890-xxxxxxxx.apps.googleusercontent.com">
+    </label>
     <div>
       <strong>Conexión</strong>
       <div class="google-actions">
@@ -131,7 +164,7 @@ header,main{width:100%;max-width:100%}.brand{min-width:0}.nav{min-width:0}.page{
     <button class="btn green" id="googleBackupNow">☁️ Respaldar ahora en Google Drive</button>
     <button class="btn yellow" id="googleRestore">📥 Restaurar desde Google Drive</button>
   </div>
-  <div class="google-note">💡 La copia se guarda en el espacio privado de datos de la aplicación de Google Drive. No aparece como un archivo normal en tu carpeta principal de Drive; la app es quien la administra. La autorización se realiza de forma segura mediante Android; no necesitas introducir un Client ID.</div>
+  <div class="google-note">💡 La copia se guarda en el espacio privado de datos de la aplicación de Google Drive. No aparece como un archivo normal en tu carpeta principal de Drive; la app es quien la administra. Para usar esta función primero hay que configurar un Client ID de Google para la aplicación.</div>
   <div class="tools">
     <button class="btn blue" id="backup">⬇️ Descargar copia manual</button>
     <label class="btn">♻️ Restaurar archivo JSON<input id="restore" type="file" accept=".json" hidden></label>
@@ -162,9 +195,9 @@ header,main{width:100%;max-width:100%}.brand{min-width:0}.nav{min-width:0}.page{
   <div id="locationSuggestions" class="location-suggestions" hidden></div>
   <small class="location-help">Escribe o selecciona una localidad. Se mostrarán sugerencias.</small>
 </label><label>Día de cobro<select id="fDay"></select></label><label>Mensualidad ($)<input id="fAmount" type="number" min="0"></label><label class="full">Notas<textarea id="fNotes"></textarea></label></div><div class="tools"><button class="btn blue" id="saveClient">💾 Guardar cliente</button><button class="btn" id="cancelEdit">Cancelar</button></div></div></div>
-<div class="modal" id="commitmentModal"><div class="modalbox"><button class="close" id="closeCommitment">×</button><h2 id="commitmentTitle">🤝 Compromiso de pago</h2><p class="small" id="commitmentClientInfo"></p><div class="form"><label>Fecha en que pagará<input id="commitmentDate" type="date"></label><label>Hora del recordatorio<input id="commitmentTime" type="time" value="09:00"></label><label class="full">Nota (opcional)<textarea id="commitmentNote" placeholder="Ej. Me pagan el viernes."></textarea></label></div><p class="small">El recordatorio se programará para la <b>hora que elijas</b> y funcionará aunque cierres la aplicación.</p><div class="tools"><button class="btn blue" id="saveCommitment">🔔 Guardar compromiso</button><button class="btn danger-outline" id="clearCommitment">🗑️ Quitar compromiso</button><button class="btn" id="cancelCommitment">Cancelar</button></div></div></div>
+<div class="modal" id="commitmentModal"><div class="modalbox"><button class="close" id="closeCommitment">×</button><h2 id="commitmentTitle">🤝 Compromiso de pago</h2><p class="small" id="commitmentClientInfo"></p><div class="form"><label>Fecha en que pagará<input id="commitmentDate" type="date"></label><label class="full">Nota (opcional)<textarea id="commitmentNote" placeholder="Ej. Me pagan el viernes."></textarea></label></div><p class="small">El recordatorio está programado para las <b>09:00 a. m.</b> del día elegido.</p><div class="tools"><button class="btn blue" id="saveCommitment">🔔 Guardar compromiso</button><button class="btn danger-outline" id="clearCommitment">🗑️ Quitar compromiso</button><button class="btn" id="cancelCommitment">Cancelar</button></div></div></div>
 <div class="modal" id="commitmentReminderModal"><div class="modalbox"><button class="close" id="closeCommitmentReminder">×</button><h2>🔔 Recordatorio de compromisos</h2><p class="small">Estos clientes indicaron que hoy realizarían su pago.</p><div id="commitmentReminderList" class="commitment-modal-list"></div><div class="tools"><button class="btn" id="closeCommitmentReminder2">Cerrar</button></div></div></div>
-<div class="modal" id="importModal"><div class="modalbox"><button class="close" id="closeImport">×</button><h2>📥 Pegar lista completa</h2><p class="small">Un cliente por línea.</p><textarea id="bulk" placeholder="Laura de la Rosa\nYoni Linares\nMellis"></textarea><div class="form"><label>Día<select id="bulkDay"></select></label><label>Mensualidad ($)<input id="bulkAmount" type="number" value="250"></label></div><div class="tools"><button class="btn blue" id="doImport">Importar clientes</button></div></div></div><div class="modal" id="waModal"><div class="modalbox"><button class="close" id="closeWa">×</button><h2>📲 WhatsApp</h2><p id="waClientInfo" class="small"></p><div class="wa-choice-grid"><button class="wa-choice" id="waSendText">📝 Mensaje de texto<small>Abre directamente el chat con el mensaje preparado.</small></button><button class="wa-choice" id="waSendImage">🖼️ Imagen personalizada<small>Descarga la imagen y abre directamente el chat del cliente para adjuntarla.</small></button><button class="wa-choice" id="waSendBoth">📝🖼️ Mensaje + imagen<small>Prepara el mensaje, descarga la imagen y abre directamente el chat del cliente.</small></button></div><div class="card" style="margin-top:10px"><div class="tools"><label class="btn green" style="display:inline-block;cursor:pointer">➕ Agregar imagen<input id="waImageInput" type="file" accept="image/*" hidden></label></div><div id="waGallery" class="wa-gallery"></div><div id="waSelectedNote" class="wa-selected-note" hidden></div><p class="small">Las imágenes se guardan en este dispositivo. Puedes marcarlas como favoritas, renombrarlas o eliminarlas. También se incluyen en las copias de seguridad cuando usas Google Drive o una copia manual.</p></div></div></div>
+<div class="modal" id="importModal"><div class="modalbox"><button class="close" id="closeImport">×</button><h2>📥 Pegar lista completa</h2><p class="small">Un cliente por línea.</p><textarea id="bulk" placeholder="Laura de la Rosa\nYoni Linares\nMellis"></textarea><div class="form"><label>Día<select id="bulkDay"></select></label><label>Mensualidad ($)<input id="bulkAmount" type="number" value="250"></label></div><div class="tools"><button class="btn blue" id="doImport">Importar clientes</button></div></div></div><div class="global-pending-modal" id="globalPendingModal" aria-hidden="true"><div class="global-pending-box" role="dialog" aria-modal="true" aria-labelledby="globalPendingTitle"><div class="global-pending-head"><div><h2 id="globalPendingTitle">🟠 Pendientes y adeudos</h2><div id="globalPendingSubtitle" class="small">Todos los días de cobro</div></div><button type="button" class="global-pending-close" id="closeGlobalPending" aria-label="Cerrar">×</button></div><div class="global-pending-summary"><div><span class="small">Pendiente del mes seleccionado</span><b id="globalPendingMonthTotal">$0.00</b></div><div><span class="small">Adeudo acumulado de meses marcados</span><b id="globalPendingAccumTotal">$0.00</b></div></div><div class="global-pending-filters" role="group" aria-label="Filtrar clientes pendientes"><button type="button" class="global-pending-filter active-month" id="globalPendingMonthBtn" aria-pressed="true">📅 Pendientes del mes</button><button type="button" class="global-pending-filter" id="globalPendingAllBtn" aria-pressed="false">🗓️ Pendientes de todos los meses</button></div><div class="global-pending-month-picker" id="globalPendingMonthPickerWrap"><label for="globalPendingMonthSelect">Mes que quieres consultar</label><select id="globalPendingMonthSelect" aria-label="Seleccionar mes para ver pendientes"></select></div><p class="global-pending-help" id="globalPendingHelp">Vista del mes seleccionado: solo aparecen clientes que tienen pendiente ese mes. Toca cada mes para cambiar su estado; los cambios se guardan en la lista original de su fecha de cobro.</p><div id="globalPendingList" class="global-pending-list"></div></div></div><div class="modal" id="waModal"><div class="modalbox"><button class="close" id="closeWa">×</button><h2>📲 WhatsApp</h2><p id="waClientInfo" class="small"></p><div class="wa-choice-grid"><button class="wa-choice" id="waSendText">📝 Mensaje de texto<small>Abre directamente el chat con el mensaje preparado.</small></button><button class="wa-choice" id="waSendImage">🖼️ Imagen personalizada<small>Descarga la imagen y abre directamente el chat del cliente para adjuntarla.</small></button><button class="wa-choice" id="waSendBoth">📝🖼️ Mensaje + imagen<small>Prepara el mensaje, descarga la imagen y abre directamente el chat del cliente.</small></button></div><div class="card" style="margin-top:10px"><div class="tools"><label class="btn green" style="display:inline-block;cursor:pointer">➕ Agregar imagen<input id="waImageInput" type="file" accept="image/*" hidden></label></div><div id="waGallery" class="wa-gallery"></div><div id="waSelectedNote" class="wa-selected-note" hidden></div><p class="small">Las imágenes se guardan en este dispositivo. Puedes marcarlas como favoritas, renombrarlas o eliminarlas. También se incluyen en las copias de seguridad cuando usas Google Drive o una copia manual.</p></div></div></div>
 <script>
 (() => {
 'use strict';
@@ -242,6 +275,92 @@ $('monthCurrent').onchange=()=>{renderAll()};$('yearSelect').onchange=()=>{year=
 function renderPaymentDaysEditor(){const box=$('paymentDaysEditor');if(!box)return;box.innerHTML=DAYS.map((d,i)=>`<div class="payment-day-item"><div class="payment-day-head"><strong>Fecha ${i+1}</strong><button type="button" class="delete-day" data-index="${i}" title="Eliminar fecha">🗑️</button></div><label>Día<input class="payment-day-input" data-index="${i}" type="number" min="1" max="31" value="${d}"></label></div>`).join('');const cols=window.matchMedia('(max-width:700px)').matches?2:4;box.classList.toggle('incomplete-row',DAYS.length%cols!==0)}
 function renderAll(){const pr=$('pendingReport');if(pr)pr.hidden=true;renderPaymentDaysEditor();refreshDaySelects();refreshFilterDay();refreshLocationFilter();refreshClientDateFilters();renderHome();renderGrid();renderClients();renderTrash();const sc=$('settingsClientCount');if(sc)sc.textContent=db.clients.length;$('companyName').value=db.company.name||'Internet Powerful';$('companyPhone').value=db.company.phone||'';$('companyAddress').value=db.company.address||'';$('template').value=db.company.template||DEFAULT}
 function renderHome(){const cm=Number($('monthCurrent').value||currentMonth);let total=db.clients.reduce((s,c)=>s+Number(c.amount||0),0),paid=db.clients.reduce((s,c)=>s+(st(c,year,cm)==='paid'?Number(c.amount||0):0),0),pend=db.clients.reduce((s,c)=>s+(st(c,year,cm)==='pending'?Number(c.amount||0):0),0);$('totalClients').textContent=db.clients.length;$('totalMoney').textContent=money(total);$('paidMoney').textContent=money(paid);$('pendingMoney').textContent=money(pend);$('dates').innerHTML=DAYS.map(d=>{const a=db.clients.filter(c=>Number(c.day)===d),total=a.reduce((s,c)=>s+Number(c.amount||0),0),paidMoney=a.filter(c=>st(c,year,cm)==='paid').reduce((s,c)=>s+Number(c.amount||0),0),pendingMoney=a.filter(c=>st(c,year,cm)==='pending').reduce((s,c)=>s+Number(c.amount||0),0);return `<button class="date-card" data-date="${d}"><strong>📅 Día ${String(d).padStart(2,'0')}</strong><div>${a.length} clientes</div><div class="date-money"><span>💰 Total: <b>${money(total)}</b></span><span>🟢 Pagado: <b>${money(paidMoney)}</b></span><span>🟡 Falta por pagar: <b>${money(pendingMoney)}</b></span></div><span class="small">Abrir página de esta fecha</span></button>`}).join('');document.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{selectedDay=Number(b.dataset.date);show('cobranza')})}
+let globalPendingMode='month';
+let globalPendingKeptIds=new Set();
+let globalPendingDismissedIds=new Set();
+function initGlobalPendingMonthSelect(){
+  const sel=$('globalPendingMonthSelect');if(!sel)return;
+  sel.innerHTML=MONTHS.map((label,i)=>`<option value="${i+1}">${label}</option>`).join('');
+  sel.value=String(currentMonth);
+}
+initGlobalPendingMonthSelect();
+function openGlobalPending(){
+  const modal=$('globalPendingModal');
+  if(!modal)return;
+  globalPendingMode='month';
+  globalPendingKeptIds=new Set();
+  globalPendingDismissedIds=new Set();
+  const monthSelect=$('globalPendingMonthSelect');if(monthSelect)monthSelect.value=String(currentMonth);
+  updateGlobalPendingFilters();
+  renderGlobalPending();
+  modal.classList.add('show');modal.setAttribute('aria-hidden','false');
+}
+function closeGlobalPending(){
+  const modal=$('globalPendingModal');if(!modal)return;
+  modal.classList.remove('show');modal.setAttribute('aria-hidden','true');
+}
+function updateGlobalPendingFilters(){
+  const monthBtn=$('globalPendingMonthBtn'),allBtn=$('globalPendingAllBtn');
+  if(!monthBtn||!allBtn)return;
+  monthBtn.classList.toggle('active-month',globalPendingMode==='month');
+  allBtn.classList.toggle('active-all',globalPendingMode==='all');
+  monthBtn.setAttribute('aria-pressed',String(globalPendingMode==='month'));
+  allBtn.setAttribute('aria-pressed',String(globalPendingMode==='all'));
+  const m=Number($('globalPendingMonthSelect')?.value||currentMonth),y=Number(year||yearNow);
+  $('globalPendingMonthPickerWrap').hidden=globalPendingMode!=='month';
+  $('globalPendingHelp').textContent=globalPendingMode==='month'
+    ? `Vista de ${MONTHS[m-1]} de ${y}: solo aparecen clientes que tienen pendiente este mes. Puedes cambiar cualquier mensualidad y el cambio se guarda en su lista original.`
+    : `Vista de todos los meses de ${y}: aparecen clientes que tengan al menos una mensualidad pendiente durante el año. Puedes cambiar cualquier mes y el cambio se guarda en su lista original.`;
+}
+function renderGlobalPending(){
+  const box=$('globalPendingList');if(!box)return;
+  const m=Number($('globalPendingMonthSelect')?.value||currentMonth),y=Number(year||yearNow);
+  const clients=db.clients.filter(c=>{
+    if(globalPendingDismissedIds.has(String(c.id)))return false;
+    let matches=false;
+    if(globalPendingMode==='month')matches=st(c,y,m)==='pending';
+    else {for(let mm=1;mm<=12;mm++)if(st(c,y,mm)==='pending'){matches=true;break;}}
+    return matches||globalPendingKeptIds.has(String(c.id));
+  }).sort((a,b)=>Number(a.day)-Number(b.day)||String(a.name).localeCompare(String(b.name),'es'));
+  clients.forEach(c=>globalPendingKeptIds.add(String(c.id)));
+  const monthTotal=db.clients.filter(c=>st(c,y,m)==='pending').reduce((sum,c)=>sum+Number(c.amount||0),0);
+  const accumTotal=db.clients.reduce((sum,c)=>sum+Array.from({length:12},(_,i)=>st(c,y,i+1)==='pending'?Number(c.amount||0):0).reduce((a,v)=>a+v,0),0);
+  $('globalPendingMonthTotal').textContent=money(monthTotal);
+  $('globalPendingAccumTotal').textContent=money(accumTotal);
+  $('globalPendingSubtitle').textContent=globalPendingMode==='month'
+    ? `${MONTHS[m-1]} de ${y} · Todos los días de cobro · ${clients.length} clientes pendientes`
+    : `Todos los meses de ${y} · Todos los días de cobro · ${clients.length} clientes con adeudo`;
+  updateGlobalPendingFilters();
+  if(!clients.length){
+    box.innerHTML=globalPendingMode==='month'
+      ? `<div class="global-pending-empty">🎉 No hay clientes pendientes de ${MONTHS[m-1]} de ${y}.</div>`
+      : `<div class="global-pending-empty">🎉 No hay clientes con mensualidades pendientes en ${y}.</div>`;
+    return;
+  }
+  box.innerHTML=clients.map(c=>{
+    const pendingMonths=Array.from({length:12},(_,i)=>i+1).filter(mm=>st(c,y,mm)==='pending');
+    const debt=pendingMonths.length*Number(c.amount||0);
+    const visibleMonths=globalPendingMode==='month'?[m]:MONTHS.map((_,i)=>i+1);
+    const months=visibleMonths.map(mm=>{const label=MONTHS[mm-1],status=st(c,y,mm);const cls=status==='paid'?'paid':status==='pending'?'pending':'';const icon=status==='paid'?'🟢':status==='pending'?'🟡':'⚪';return `<button type="button" class="global-month-btn ${cls}" data-global-client="${esc(c.id)}" data-global-month="${mm}" title="Cambiar estado de ${label}">${icon} ${label}</button>`}).join('');
+    return `<article class="global-pending-client" data-global-card="${esc(c.id)}"><div class="global-pending-client-head"><div class="global-pending-client-main"><div class="global-pending-client-info"><div class="global-pending-client-name">${esc(c.name)}</div><div class="global-pending-meta">Día ${String(c.day).padStart(2,'0')} · Mensualidad ${money(c.amount)}${c.phone?' · '+esc(c.phone):''}</div><div class="global-pending-meta" data-global-pending-summary="${esc(c.id)}">${pendingMonths.length} mes(es) pendiente(s): ${pendingMonths.length?pendingMonths.map(mm=>MONTHS[mm-1]).join(', '):'ninguno'}</div></div><div class="global-pending-client-tools"><button type="button" class="global-pending-dismiss" data-global-dismiss="${esc(c.id)}" title="Quitar de esta lista (no elimina al cliente ni sus pagos)" aria-label="Quitar ${esc(c.name)} de esta lista">×</button><div class="global-pending-debt" data-global-debt="${esc(c.id)}">Adeudo<br>${money(debt)}</div></div></div></div><div class="global-pending-months">${months}</div></article>`;
+  }).join('');
+}
+function cycleGlobalPending(id,m){
+  const c=db.clients.find(x=>String(x.id)===String(id));if(!c)return;
+  const y=Number(year||yearNow),old=st(c,y,m),next=old==='empty'?'paid':old==='paid'?'pending':'empty';
+  // Mantener la tarjeta visible después de cambiar el estado; el usuario decide cuándo quitarla con ×.
+  globalPendingKeptIds.add(String(c.id));
+  setSt(c,y,m,next);save();renderHome();renderGridSummary();renderGrid();renderClients();renderGlobalPending();
+}
+function dismissGlobalPending(id){globalPendingDismissedIds.add(String(id));globalPendingKeptIds.delete(String(id));renderGlobalPending()}
+$('pendingMoneyButton').onclick=openGlobalPending;
+$('globalPendingMonthBtn').onclick=()=>{globalPendingMode='month';globalPendingKeptIds=new Set();renderGlobalPending()};
+$('globalPendingAllBtn').onclick=()=>{globalPendingMode='all';globalPendingKeptIds=new Set();renderGlobalPending()};
+$('globalPendingMonthSelect').onchange=()=>{globalPendingMode='month';globalPendingKeptIds=new Set();renderGlobalPending()};
+$('closeGlobalPending').onclick=closeGlobalPending;
+$('globalPendingModal').onclick=e=>{if(e.target===$('globalPendingModal'))closeGlobalPending()};
+$('globalPendingList').onclick=e=>{const x=e.target.closest('[data-global-dismiss]');if(x){dismissGlobalPending(x.dataset.globalDismiss);return}const b=e.target.closest('[data-global-client][data-global-month]');if(b)cycleGlobalPending(b.dataset.globalClient,Number(b.dataset.globalMonth))};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGlobalPending()});
 function arrearsClass(c){
   let pending=0;
   for(let m=1;m<=12;m++) if(st(c,year,m)==='pending') pending++;
@@ -255,7 +374,7 @@ function arrearsTitle(c){
 function markHtml(c,m){const s=st(c,year,m);return `<div class="month ${m===Number($('monthCurrent').value)?'current-col':''}"><button class="mark ${s==='paid'?'paid':s==='pending'?'pending':''} ${m===Number($('monthCurrent').value)?'current':''}" data-cycle="${c.id}" data-month="${m}" title="${MONTHS[m-1]}"></button></div>`}
 function rowActions(c){return `<div class="actions-cell"><button class="row-btn row-paid" data-row-paid="${c.id}">🟢 Toda pagada</button><button class="row-btn row-pending" data-row-pending="${c.id}">🟡 Toda pendiente</button><button class="row-btn row-clear" data-row-clear="${c.id}">⚪ Desmarcar fila</button><button class="row-btn row-save" data-row-save="${c.id}">💾 Guardar</button><span class="row-status" data-row-status="${c.id}"></span></div>`}
 function clientNameHtml(name){const words=String(name||'').trim().split(/\s+/).filter(Boolean);if(words.length<=1)return esc(name);const cut=Math.ceil(words.length/2);return esc(words.slice(0,cut).join(' '))+'<br>'+esc(words.slice(cut).join(' '));}
-function renderGrid(){const q=($('searchDay').value||'').trim().toLowerCase();const list=db.clients.filter(c=>Number(c.day)===selectedDay&&c.name.toLowerCase().includes(q));$('dayTitle').textContent=String(selectedDay).padStart(2,'0');const counts={paid:0,pending:0,empty:0};list.forEach(c=>{for(let m=1;m<=12;m++){const s=st(c,year,m);counts[s]++}});const cm=Number($('monthCurrent').value),totalMoney=list.reduce((s,c)=>s+Number(c.amount||0),0),paidMoney=list.filter(c=>st(c,year,cm)==='paid').reduce((s,c)=>s+Number(c.amount||0),0),pendingMoney=list.filter(c=>st(c,year,cm)==='pending').reduce((s,c)=>s+Number(c.amount||0),0);updateArrearsLegend();$('yearSummary').innerHTML=`<span class="stat">👥 <b>${list.length}</b> clientes</span><span class="stat">💰 <b>${money(totalMoney)}</b><small>Total mensual</small></span><span class="stat">🟢 <b>${money(paidMoney)}</b><small>Ya pagaron</small></span><button type="button" class="stat clickable-stat" data-pending-report>🟡 <b>${money(pendingMoney)}</b><small>Falta por pagar · Ver lista</small></button>`;$('currentMonthLabel').textContent=MONTHS[Number($('monthCurrent').value)-1];$('currentMonthLabel2').textContent=MONTHS[Number($('monthCurrent').value)-1];$('currentMonthLabel3').textContent=MONTHS[Number($('monthCurrent').value)-1];$('gridBody').innerHTML=list.map((c,i)=>`<div class="row" data-row="${c.id}"><div class="name ${arrearsClass(c)}" title="${arrearsTitle(c)}"><div class="namebox"><input class="clientcheck" data-id="${c.id}" type="checkbox"><span class="client-info"><span class="num">${i+1}</span><span class="name-text">${clientNameHtml(c.name)}</span><span class="name-sub">${esc(c.phone||'')} · ${money(c.amount)}${c.ip?' · '+esc(c.ip):''}</span></span></div></div>${Array.from({length:12},(_,j)=>markHtml(c,j+1)).join('')}${rowActions(c)}</div>`).join('')||`<div class="card">No hay clientes en el día ${selectedDay}.</div>`;document.querySelectorAll('[data-cycle]').forEach(b=>b.onclick=()=>cycle(b.dataset.cycle,Number(b.dataset.month)));document.querySelectorAll('.clientcheck').forEach(x=>x.onchange=updateSelect);updateSelect()}
+function renderGrid(){const q=($('searchDay').value||'').trim().toLowerCase();const list=db.clients.filter(c=>Number(c.day)===selectedDay&&c.name.toLowerCase().includes(q));$('dayTitle').textContent=String(selectedDay).padStart(2,'0');const counts={paid:0,pending:0,empty:0};list.forEach(c=>{for(let m=1;m<=12;m++){const s=st(c,year,m);counts[s]++}});const cm=Number($('monthCurrent').value),totalMoney=list.reduce((s,c)=>s+Number(c.amount||0),0),paidMoney=list.filter(c=>st(c,year,cm)==='paid').reduce((s,c)=>s+Number(c.amount||0),0),pendingMoney=list.filter(c=>st(c,year,cm)==='pending').reduce((s,c)=>s+Number(c.amount||0),0);updateArrearsLegend();$('yearSummary').innerHTML=`<span class="stat">👥 <b>${list.length}</b> clientes</span><span class="stat">💰 <b>${money(totalMoney)}</b><small>Total mensual</small></span><span class="stat">🟢 <b>${money(paidMoney)}</b><small>Ya pagaron</small></span><button type="button" class="stat clickable-stat" data-pending-report>🟡 <b>${money(pendingMoney)}</b><small>Falta por pagar · Ver lista</small></button>`;$('currentMonthLabel').textContent=MONTHS[Number($('monthCurrent').value)-1];$('currentMonthLabel2').textContent=MONTHS[Number($('monthCurrent').value)-1];$('currentMonthLabel3').textContent=MONTHS[Number($('monthCurrent').value)-1];$('headSep').textContent=MONTHS[Number($('monthCurrent').value)-1];$('gridBody').innerHTML=list.map((c,i)=>`<div class="row" data-row="${c.id}"><div class="name ${arrearsClass(c)}" title="${arrearsTitle(c)}"><div class="namebox"><input class="clientcheck" data-id="${c.id}" type="checkbox"><span class="client-info"><span class="num">${i+1}</span><span class="name-text">${clientNameHtml(c.name)}</span><span class="name-sub">${esc(c.phone||'')} · ${money(c.amount)}${c.ip?' · '+esc(c.ip):''}</span></span></div></div>${Array.from({length:12},(_,j)=>markHtml(c,j+1)).join('')}${rowActions(c)}</div>`).join('')||`<div class="card">No hay clientes en el día ${selectedDay}.</div>`;document.querySelectorAll('[data-cycle]').forEach(b=>b.onclick=()=>cycle(b.dataset.cycle,Number(b.dataset.month)));document.querySelectorAll('.clientcheck').forEach(x=>x.onchange=updateSelect);updateSelect()}
 function updateArrearsLegend(){
   const list=db.clients.filter(c=>Number(c.day)===selectedDay);
   let one=0,two=0;
@@ -287,38 +406,12 @@ function dirty(id,msg='Cambios sin guardar'){const r=document.querySelector(`.ro
 function cycle(id,m){const c=db.clients.find(x=>x.id===id);if(!c)return;const s=st(c,year,m),n=s==='empty'?'paid':s==='paid'?'pending':'empty';setSt(c,year,m,n);const b=document.querySelector(`.mark[data-cycle="${id}"][data-month="${m}"]`);if(b)b.className=`mark ${n==='paid'?'paid':n==='pending'?'pending':''} ${m===Number($('monthCurrent').value)?'current':''}`;updateArrearsVisual(id);updateArrearsLegend();dirty(id)}
 function setRow(id,state){const c=db.clients.find(x=>x.id===id);if(!c)return;for(let m=1;m<=12;m++)setSt(c,year,m,state);const r=document.querySelector(`.row[data-row="${id}"]`);if(r)r.querySelectorAll('.mark').forEach((b,i)=>b.className=`mark ${state==='paid'?'paid':state==='pending'?'pending':''} ${i+1===Number($('monthCurrent').value)?'current':''}`);updateArrearsVisual(id);updateArrearsLegend();dirty(id)}
 function saveRow(id){save();const r=document.querySelector(`.row[data-row="${id}"]`);if(r){r.classList.remove('dirty');const s=r.querySelector('[data-row-status]');if(s){s.textContent='✓ Guardado';setTimeout(()=>{if(s)s.textContent=''},1200)}}renderHome();renderGridSummary()}
-
-function saveAllChanges(){
-  const rows=[...document.querySelectorAll('.row.dirty')];
-
-  save();
-
-  rows.forEach(r=>{
-    r.classList.remove('dirty');
-    const s=r.querySelector('[data-row-status]');
-    if(s){
-      s.textContent='✓ Guardado';
-      setTimeout(()=>{
-        if(s)s.textContent='';
-      },1500);
-    }
-  });
-
-  renderHome();
-  renderGridSummary();
-
-  alert('✅ Todos los cambios fueron guardados correctamente.');
-}
-
-
 function renderGridSummary(){const list=db.clients.filter(c=>Number(c.day)===selectedDay),counts={paid:0,pending:0,empty:0};list.forEach(c=>{for(let m=1;m<=12;m++){const s=st(c,year,m);counts[s]++}});const cm=Number($('monthCurrent').value),totalMoney=list.reduce((s,c)=>s+Number(c.amount||0),0),paidMoney=list.filter(c=>st(c,year,cm)==='paid').reduce((s,c)=>s+Number(c.amount||0),0),pendingMoney=list.filter(c=>st(c,year,cm)==='pending').reduce((s,c)=>s+Number(c.amount||0),0);$('yearSummary').innerHTML=`<span class="stat">👥 <b>${list.length}</b> clientes</span><span class="stat">💰 <b>${money(totalMoney)}</b><small>Total mensual</small></span><span class="stat">🟢 <b>${money(paidMoney)}</b><small>Ya pagaron</small></span><button type="button" class="stat clickable-stat" data-pending-report>🟡 <b>${money(pendingMoney)}</b><small>Falta por pagar · Ver lista</small></button>`}
 function setAll(state){const list=db.clients.filter(c=>Number(c.day)===selectedDay);if(!list.length)return alert('No hay clientes en esta página.');const label=state==='paid'?'PAGADOS':state==='pending'?'PENDIENTES':'SIN MARCA';if(prefs.confirm&&!confirm(`¿Marcar los 12 meses de ${list.length} clientes del día ${selectedDay} como ${label}?`))return;list.forEach(c=>{for(let m=1;m<=12;m++)setSt(c,year,m,state)});save();renderAll()}
 $('allPaid').onclick=()=>setAll('paid');$('allPending').onclick=()=>setAll('pending');$('clearAllMonths').onclick=()=>setAll('empty');
-$('saveAllChangesTop').onclick=saveAllChanges;
-$('saveAllChangesBottom').onclick=saveAllChanges;
 $('pendingMonthCurrent').onclick=()=>{const m=Number($('monthCurrent').value),list=db.clients.filter(c=>Number(c.day)===selectedDay);if(!list.length)return alert('No hay clientes en esta página.');if(prefs.confirm&&!confirm(`¿Marcar ${MONTHS[m-1]} como PENDIENTE para los ${list.length} clientes del día ${selectedDay}?`))return;list.forEach(c=>setSt(c,year,m,'pending'));save();renderAll()};$('markMonthCurrent').onclick=()=>{const m=Number($('monthCurrent').value),list=db.clients.filter(c=>Number(c.day)===selectedDay);if(!list.length)return alert('No hay clientes en esta página.');if(prefs.confirm&&!confirm(`¿Marcar ${MONTHS[m-1]} como PAGADO para los ${list.length} clientes del día ${selectedDay}?`))return;list.forEach(c=>setSt(c,year,m,'paid'));save();renderAll()};$('clearMonth').onclick=()=>{const m=Number($('monthCurrent').value),list=db.clients.filter(c=>Number(c.day)===selectedDay);if(!list.length)return alert('No hay clientes en esta página.');if(prefs.confirm&&!confirm(`¿Desmarcar ${MONTHS[m-1]} para los ${list.length} clientes del día ${selectedDay}?`))return;list.forEach(c=>setSt(c,year,m,'empty'));save();renderAll()};
 $('selectAll').onchange=()=>{document.querySelectorAll('.clientcheck').forEach(x=>x.checked=$('selectAll').checked);updateSelect()};function updateSelect(){const a=[...document.querySelectorAll('.clientcheck')];const checked=a.filter(x=>x.checked).length;$('selectAll').checked=a.length>0&&checked===a.length;$('selectedCount').textContent=`${checked} seleccionado${checked===1?'':'s'}`}
-function moveToTrash(ids){const clients=db.clients.filter(c=>ids.includes(c.id));if(!clients.length)return false;const names=clients.map(c=>c.name).join(', ');if(!confirm(`¿Dar de baja a ${clients.length} cliente(s)?\n\n${names}\n\nPasarán a la Papelera de reciclaje y dejarán de aparecer en la libreta.`))return false;const code=prompt('SEGUNDA CONFIRMACIÓN\n\nPara confirmar la baja escribe exactamente: ELIMINAR');if(code!=='ELIMINAR'){alert('Baja cancelada. La palabra de confirmación no coincidió.');return false}const now=new Date().toISOString();clients.forEach(c=>{if(c.paymentPromise&&window.Android&&typeof Android.cancelCommitmentReminder==='function'){Android.cancelCommitmentReminder(c.id)}db.trash.push({...c,originalDay:c.day,deletedAt:now})});db.clients=db.clients.filter(c=>!ids.includes(c.id));save();renderAll();return true}
+function moveToTrash(ids){const clients=db.clients.filter(c=>ids.includes(c.id));if(!clients.length)return false;const names=clients.map(c=>c.name).join(', ');if(!confirm(`¿Dar de baja a ${clients.length} cliente(s)?\n\n${names}\n\nPasarán a la Papelera de reciclaje y dejarán de aparecer en la libreta.`))return false;const code=prompt('SEGUNDA CONFIRMACIÓN\n\nPara confirmar la baja escribe exactamente: ELIMINAR');if(code!=='ELIMINAR'){alert('Baja cancelada. La palabra de confirmación no coincidió.');return false}const now=new Date().toISOString();clients.forEach(c=>db.trash.push({...c,originalDay:c.day,deletedAt:now}));db.clients=db.clients.filter(c=>!ids.includes(c.id));save();renderAll();return true}
 $('deleteSelected').onclick=()=>{const ids=[...document.querySelectorAll('.clientcheck:checked')].map(x=>x.dataset.id);if(!ids.length)return alert('Selecciona los clientes que causaron baja.');moveToTrash(ids)};
 function openEdit(id=null){editId=id;const c=id?db.clients.find(x=>x.id===id):null;$('editTitle').textContent=c?'✏️ Editar cliente':'➕ Nuevo cliente';$('fName').value=c?.name||'';$('fPhone').value=c?.phone||'';$('fIp').value=c?.ip||'';$('fAddress').value=c?.address||'';$('fLocation').value=c?.location||'';refreshLocationSuggestions();$('fLocationSelect').value=c?.location||'';$('fDay').value=c?.day||selectedDay;$('fAmount').value=c?.amount??250;$('fNotes').value=c?.notes||'';$('editModal').classList.add('show')}
 $('newClient').onclick=()=>openEdit();$('newClientDay').onclick=()=>openEdit();$('closeEdit').onclick=$('cancelEdit').onclick=()=>$('editModal').classList.remove('show');$('saveClient').onclick=()=>{const n=$('fName').value.trim();if(!n)return alert('Escribe el nombre.');let c=editId?db.clients.find(x=>x.id===editId):{id:crypto.randomUUID(),history:{}};Object.assign(c,{name:n,phone:$('fPhone').value.trim(),ip:$('fIp').value.trim(),address:$('fAddress').value.trim(),location:$('fLocation').value.trim(),day:Number($('fDay').value),amount:Number($('fAmount').value||0),notes:$('fNotes').value.trim()});if(!editId)db.clients.push(c);save();$('editModal').classList.remove('show');renderAll()};
@@ -332,19 +425,21 @@ $('searchClients').oninput=renderClients;$('filterStatus').onchange=renderClient
 function localDateISO(d=new Date()){const x=new Date(d);x.setHours(0,0,0,0);const off=x.getTimezoneOffset();return new Date(x.getTime()-off*60000).toISOString().slice(0,10)}
 function formatCommitmentDate(iso){if(!iso)return '';const parts=String(iso).split('-');if(parts.length!==3)return iso;const d=new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]));return d.toLocaleDateString('es-MX',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}
 function commitmentClientsForToday(){const today=localDateISO();return db.clients.filter(c=>c.paymentPromise&&c.paymentPromise.date===today)}
-function renderCommitmentsList(){const box=$('commitmentsList');const count=$('commitmentsCount');if(!box)return;const list=db.clients.filter(c=>c.paymentPromise&&c.paymentPromise.date).sort((a,b)=>String(a.paymentPromise.date).localeCompare(String(b.paymentPromise.date)));if(count)count.textContent=`${list.length} ${list.length===1?'pendiente':'pendientes'}`;if(!list.length){box.innerHTML='<div class="commitment-empty">No hay compromisos de pago registrados.</div>';return}box.innerHTML=list.map(c=>{const p=c.paymentPromise,today=p.date===localDateISO(),time=p.time||'09:00';return `<div class="commitment-item"><strong>${esc(c.name)}</strong><div class="commitment-meta">📅 ${formatCommitmentDate(p.date)} · ⏰ ${esc(time)} · Adeudo/servicio: ${money(c.amount)} · Día habitual: ${c.day}</div>${p.note?`<div class="commitment-note">📝 ${esc(p.note)}</div>`:''}${today?`<div class="commitment-badge commitment-due">🔔 Recordatorio para hoy a las ${esc(time)}</div>`:''}<div class="commitment-tools"><button class="btn" data-commitment="${c.id}">✏️ Editar compromiso</button>${c.phone?`<button class="btn green" data-wa="${c.id}">WhatsApp</button>`:''}</div></div>`}).join('')}
+function renderCommitmentsList(){const box=$('commitmentsList');const count=$('commitmentsCount');if(!box)return;const list=db.clients.filter(c=>c.paymentPromise&&c.paymentPromise.date).sort((a,b)=>String(a.paymentPromise.date).localeCompare(String(b.paymentPromise.date)));if(count)count.textContent=`${list.length} ${list.length===1?'pendiente':'pendientes'}`;if(!list.length){box.innerHTML='<div class="commitment-empty">No hay compromisos de pago registrados.</div>';return}box.innerHTML=list.map(c=>{const p=c.paymentPromise,today=p.date===localDateISO();return `<div class="commitment-item"><strong>${esc(c.name)}</strong><div class="commitment-meta">📅 ${formatCommitmentDate(p.date)} · Adeudo/servicio: ${money(c.amount)} · Día habitual: ${c.day}</div>${p.note?`<div class="commitment-note">📝 ${esc(p.note)}</div>`:''}${today?'<div class="commitment-badge commitment-due">🔔 Recordatorio para hoy a las 09:00 a. m.</div>':''}<div class="commitment-tools"><button class="btn" data-commitment="${c.id}">✏️ Editar compromiso</button>${c.phone?`<button class="btn green" data-wa="${c.id}">WhatsApp</button>`:''}</div></div>`}).join('')}
 let commitmentClientId=null;
-function openCommitment(id){const c=db.clients.find(x=>x.id===id);if(!c)return;commitmentClientId=id;$('commitmentClientInfo').textContent=`Cliente: ${c.name} · Mensualidad: ${money(c.amount)} · Día habitual: ${c.day}`;$('commitmentDate').min=localDateISO();$('commitmentDate').value=c.paymentPromise?.date||'';$('commitmentTime').value=c.paymentPromise?.time||'09:00';$('commitmentNote').value=c.paymentPromise?.note||'';$('commitmentModal').classList.add('show')}
+function openCommitment(id){const c=db.clients.find(x=>x.id===id);if(!c)return;commitmentClientId=id;$('commitmentClientInfo').textContent=`Cliente: ${c.name} · Mensualidad: ${money(c.amount)} · Día habitual: ${c.day}`;$('commitmentDate').min=localDateISO();$('commitmentDate').value=c.paymentPromise?.date||'';$('commitmentNote').value=c.paymentPromise?.note||'';$('commitmentModal').classList.add('show')}
 function closeCommitment(){commitmentClientId=null;$('commitmentModal').classList.remove('show')}
-function saveCommitment(){if(!commitmentClientId)return;const c=db.clients.find(x=>x.id===commitmentClientId);if(!c)return;const date=$('commitmentDate').value;const time=$('commitmentTime').value||'09:00';if(!date)return alert('Selecciona la fecha en que el cliente pagará.');if(date<localDateISO())return alert('La fecha del compromiso no puede ser anterior a hoy.');c.paymentPromise={date,time,note:$('commitmentNote').value.trim(),createdAt:c.paymentPromise?.createdAt||new Date().toISOString(),notifiedDate:''};save();if(window.Android&&typeof Android.scheduleCommitmentReminder==='function'){Android.scheduleCommitmentReminder(c.id,c.name,date,time,c.paymentPromise.note||'')}closeCommitment();renderAll()}
-function clearCommitment(){if(!commitmentClientId)return;const c=db.clients.find(x=>x.id===commitmentClientId);if(!c)return;if(!confirm(`¿Quitar el compromiso de pago de ${c.name}?`))return;if(window.Android&&typeof Android.cancelCommitmentReminder==='function'){Android.cancelCommitmentReminder(c.id)}delete c.paymentPromise;save();closeCommitment();renderAll()}
-function syncCommitmentReminders(){if(!window.Android||typeof Android.scheduleCommitmentReminder!=='function')return;db.clients.forEach(c=>{const p=c.paymentPromise;if(p&&p.date){Android.scheduleCommitmentReminder(c.id,c.name,p.date,p.time||'09:00',p.note||'')}})}
+function saveCommitment(){if(!commitmentClientId)return;const c=db.clients.find(x=>x.id===commitmentClientId);if(!c)return;const date=$('commitmentDate').value;if(!date)return alert('Selecciona la fecha en que el cliente pagará.');if(date<localDateISO())return alert('La fecha del compromiso no puede ser anterior a hoy.');c.paymentPromise={date,note:$('commitmentNote').value.trim(),createdAt:c.paymentPromise?.createdAt||new Date().toISOString(),notifiedDate:''};save();closeCommitment();renderAll();requestCommitmentNotificationPermission()}
+function clearCommitment(){if(!commitmentClientId)return;const c=db.clients.find(x=>x.id===commitmentClientId);if(!c)return;if(!confirm(`¿Quitar el compromiso de pago de ${c.name}?`))return;delete c.paymentPromise;save();closeCommitment();renderAll()}
+function requestCommitmentNotificationPermission(){if('Notification' in window&&Notification.permission==='default'){try{Notification.requestPermission().catch(()=>{})}catch(e){}}}
+function showCommitmentReminder(){const list=commitmentClientsForToday().filter(c=>c.paymentPromise&&c.paymentPromise.notifiedDate!==localDateISO());if(!list.length)return;const today=localDateISO();list.forEach(c=>{if(c.paymentPromise)c.paymentPromise.notifiedDate=today});save();const box=$('commitmentReminderList');if(box)box.innerHTML=list.map(c=>`<div class="commitment-reminder"><strong>👤 ${esc(c.name)}</strong><div class="commitment-meta">Indicó que hoy pagaría · ${money(c.amount)} · Día habitual ${c.day}</div>${c.paymentPromise?.note?`<div class="commitment-note">📝 ${esc(c.paymentPromise.note)}</div>`:''}<div class="tools"><button class="btn green" data-wa="${c.id}">💬 WhatsApp</button><button class="btn" data-commitment="${c.id}">Ver compromiso</button></div></div>`).join('');$('commitmentReminderModal').classList.add('show');try{if('Notification' in window&&Notification.permission==='granted'){new Notification('Internet Powerful',{body:`Tienes ${list.length} ${list.length===1?'compromiso de pago':'compromisos de pago'} para hoy.`})}}catch(e){}}
+function checkCommitmentReminders(){const now=new Date();if(now.getHours()<9)return;showCommitmentReminder()}
 function renderClients(){const q=($('searchClients').value||'').toLowerCase(),f=$('filterStatus').value,d=$('filterDay').value,fl=$('filterLocation').value,fm=$('filterMonth').value,fy=$('filterYear').value;const selectedFilterMonth=fm?Number(fm):Number($('monthCurrent').value);const selectedFilterYear=fy?Number(fy):year;const list=db.clients.filter(c=>(!d||Number(c.day)===Number(d))&&(!fl||String(c.location||'').trim()===fl)&&(!f||st(c,selectedFilterYear,selectedFilterMonth)===f)&&(`${c.name} ${c.phone||''} ${c.ip||''} ${c.location||''}`.toLowerCase().includes(q)));$('allClients').innerHTML=list.map(c=>{const p=c.paymentPromise;const pText=p&&p.date?`🤝 Compromiso: ${formatCommitmentDate(p.date)}`:'';return `<div class="client-card"><b>${esc(c.name)}</b><div class="small">Día ${c.day} · ${money(c.amount)} · ${esc(c.phone||'Sin celular')} · ${esc(c.ip||'Sin IP')}${c.location?' · 📍 '+esc(c.location):''}</div>${pText?`<div class="commitment-badge">${pText}</div>`:''}<div class="tools"><button class="btn" data-edit="${c.id}">✏️ Editar</button><button class="btn" data-commitment="${c.id}">🤝 Compromiso</button><button class="btn green" data-wa="${c.id}">WhatsApp</button><button class="btn danger-outline" data-delete-client="${c.id}">🗑️ Dar de baja</button></div></div>`}).join('')||'<p class="small">No hay clientes con esos filtros.</p>';const tc=$('trashCount');if(tc)tc.textContent=db.trash.length?`(${db.trash.length})`:'';renderCommitmentsList()}
 function renderTrash(){const box=$('trashList');if(!box)return;const tc=$('trashCount');if(tc)tc.textContent=db.trash.length?`(${db.trash.length})`:'';if(!db.trash.length){box.innerHTML='<div class="trash-empty">🗑️ La papelera está vacía.</div>';return}box.innerHTML=db.trash.slice().reverse().map(c=>`<div class="trash-card"><b>${esc(c.name)}</b><div class="trash-meta">Fecha de pago original: Día ${String(c.originalDay||c.day).padStart(2,'0')} · ${money(c.amount)} · Eliminado: ${new Date(c.deletedAt||Date.now()).toLocaleDateString('es-MX')}</div><div class="trash-tools"><button class="btn restore" data-restore-client="${c.id}">♻️ Restaurar</button><button class="btn danger-outline" data-delete-permanent="${c.id}">🗑️ Eliminar definitivamente</button></div></div>`).join('')}
 
 function restoreFromTrash(id){const idx=db.trash.findIndex(c=>c.id===id);if(idx<0)return;const c=db.trash[idx];let target=Number(c.originalDay||c.day);if(!DAYS.includes(target)){const dest=prompt(`La fecha original Día ${String(target).padStart(2,'0')} ya no existe.\n\nIndica la fecha de pago a la que quieres restaurar a ${c.name}: ${DAYS.join(', ')}.`);if(dest===null)return;target=Number(dest);if(!DAYS.includes(target))return alert('Fecha de destino no válida. No se restauró el cliente.')}if(!confirm(`¿Restaurar a ${c.name} en el Día ${String(target).padStart(2,'0')}?`))return;const restored={...c,day:target};delete restored.originalDay;delete restored.deletedAt;db.clients.push(restored);db.trash.splice(idx,1);save();renderAll();
-if(restored.paymentPromise&&window.Android&&typeof Android.scheduleCommitmentReminder==='function'){Android.scheduleCommitmentReminder(restored.id,restored.name,restored.paymentPromise.date,restored.paymentPromise.time||'09:00',restored.paymentPromise.note||'')}alert('Cliente restaurado correctamente.')}
-function deletePermanent(id){const idx=db.trash.findIndex(c=>c.id===id);if(idx<0)return;const c=db.trash[idx];if(!confirm(`¿Eliminar DEFINITIVAMENTE a ${c.name}?\n\nEsta acción no se puede deshacer y también eliminará su historial de pagos.`))return;const code=prompt('SEGUNDA CONFIRMACIÓN\n\nPara eliminarlo definitivamente escribe exactamente: ELIMINAR');if(code!=='ELIMINAR'){alert('Eliminación definitiva cancelada.');return}if(c.paymentPromise&&window.Android&&typeof Android.cancelCommitmentReminder==='function'){Android.cancelCommitmentReminder(c.id)}db.trash.splice(idx,1);save();renderAll();alert('Cliente eliminado definitivamente.')}
+setTimeout(checkCommitmentReminders,700);setInterval(checkCommitmentReminders,60000);alert('Cliente restaurado correctamente.')}
+function deletePermanent(id){const idx=db.trash.findIndex(c=>c.id===id);if(idx<0)return;const c=db.trash[idx];if(!confirm(`¿Eliminar DEFINITIVAMENTE a ${c.name}?\n\nEsta acción no se puede deshacer y también eliminará su historial de pagos.`))return;const code=prompt('SEGUNDA CONFIRMACIÓN\n\nPara eliminarlo definitivamente escribe exactamente: ELIMINAR');if(code!=='ELIMINAR'){alert('Eliminación definitiva cancelada.');return}db.trash.splice(idx,1);save();renderAll();alert('Cliente eliminado definitivamente.')}
 $('openTrash').onclick=()=>{$('trashPanel').hidden=false;$('trashPanel').scrollIntoView({behavior:'smooth',block:'start'});renderTrash()};$('closeTrash').onclick=()=>{$('trashPanel').hidden=true};
 $('arrearsOneBtn').onclick=()=>openArrearsModal('one');$('arrearsTwoBtn').onclick=()=>openArrearsModal('two');$('closeArrearsModal').onclick=closeArrearsModal;$('closeArrearsModal2').onclick=closeArrearsModal;$('arrearsModal').onclick=e=>{if(e.target===$('arrearsModal'))closeArrearsModal()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeArrearsModal()});
 
@@ -502,11 +597,12 @@ document.addEventListener('click',e=>{const b=e.target.closest('.delete-day');if
 
 $('savePaymentDays').onclick=()=>{const vals=[...document.querySelectorAll('.payment-day-input')].map(x=>Number(x.value));if(vals.length<1||vals.some(d=>!Number.isInteger(d)||d<1||d>31))return alert('Cada fecha debe ser un número del 1 al 31.');if(new Set(vals).size!==vals.length)return alert('No puede haber dos fechas de pago iguales.');const old=[...DAYS];if(prefs.confirm&&!confirm('¿Guardar estas fechas de pago? Los clientes de una fecha que cambie se moverán automáticamente a la nueva fecha.'))return;old.forEach((od,i)=>{const nd=vals[i];if(od!==nd){db.clients.forEach(c=>{if(Number(c.day)===od)c.day=nd});if(selectedDay===od)selectedDay=nd;}});DAYS=[...vals];db.settings.paymentDays=[...vals];save();refreshDaySelects();renderAll();alert('Fechas de pago actualizadas.');};
 $('savePrefs').onclick=()=>{prefs={month:$('prefMonth').value,extra:$('prefExtra').checked,confirm:$('prefConfirm').checked};localStorage.setItem(PREF_KEY,JSON.stringify(prefs));applyPrefs();renderGrid();alert('Ajustes guardados.')};$('resetPrefs').onclick=()=>{prefs={month:'current',extra:true,confirm:true};localStorage.setItem(PREF_KEY,JSON.stringify(prefs));applyPrefs();renderGrid();alert('Ajustes restaurados.')};
-/* V30/V45 — Google Drive + respaldo automático mediante autorización nativa de Android */
+/* V30 — Google Drive + respaldo automático */
 const GOOGLE_KEY='internetPowerfulGoogleBackupV1';
 const GOOGLE_FILE_NAME='internet-powerful-backup.json';
-let googleCfg={auto:false,fileId:'',lastBackup:''};
-let googleToken='',googleTokenWaiters=[];
+const GOOGLE_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+let googleCfg={clientId:'',auto:false,fileId:'',lastBackup:''};
+let googleToken='',googleTokenClient=null,googleTokenWaiters=[];
 let googleBackupTimer=null,googleBusy=false;
 
 function loadGoogleCfg(){
@@ -526,61 +622,60 @@ function setGoogleStatus(text,cls){
       : 'Sin respaldo en Google Drive.';
   }
 }
-
-function requestGoogleToken(){
+function googleReady(){
+  return !!(googleCfg.clientId && googleTokenClient);
+}
+function ensureGoogleScript(){
   return new Promise((resolve,reject)=>{
-    if(googleToken){resolve(googleToken);return}
-    if(!window.Android||typeof Android.requestGoogleDriveToken!=='function'){
-      reject(new Error('La autorización nativa de Google no está disponible en Android.'));
-      return;
-    }
-    googleTokenWaiters.push({resolve,reject});
-    try{
-      Android.requestGoogleDriveToken();
-    }catch(e){
-      googleTokenWaiters=googleTokenWaiters.filter(x=>x.resolve!==resolve);
-      reject(e);
-    }
+    if(window.google&&google.accounts&&google.accounts.oauth2)return resolve();
+    const start=Date.now();
+    const t=setInterval(()=>{
+      if(window.google&&google.accounts&&google.accounts.oauth2){clearInterval(t);resolve()}
+      else if(Date.now()-start>10000){clearInterval(t);reject(new Error('No se pudo cargar el servicio de Google.'))}
+    },100);
   });
 }
-
-window.onAndroidGoogleDriveToken=function(token){
-  if(!token){
-    window.onAndroidGoogleDriveError('Google no entregó un token de acceso.');
-    return;
-  }
-  googleToken=token;
-  setGoogleStatus('🟢 Conectado a Google Drive','google-ok');
-  const waiters=googleTokenWaiters.splice(0);
-  waiters.forEach(r=>r.resolve(token));
-};
-
-window.onAndroidGoogleDriveError=function(message){
-  const waiters=googleTokenWaiters.splice(0);
-  const err=new Error(message||'No se pudo autorizar Google Drive.');
-  waiters.forEach(r=>r.reject(err));
-  setGoogleStatus('🔴 No conectado','google-warn');
-};
-
-window.onAndroidGoogleDriveDisconnected=function(){
-  googleToken='';
-  googleTokenWaiters.splice(0).forEach(r=>r.reject(new Error('Google Drive desconectado.')));
-  setGoogleStatus('No conectado','google-warn');
-};
-
+function initGoogleClient(){
+  return ensureGoogleScript().then(()=>{
+    if(!googleCfg.clientId)throw new Error('Falta el Client ID de Google.');
+    googleTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:googleCfg.clientId,
+      scope:GOOGLE_SCOPE,
+      callback:(resp)=>{
+        if(resp&&resp.access_token){
+          googleToken=resp.access_token;
+          googleTokenWaiters.splice(0).forEach(r=>r.resolve(googleToken));
+          setGoogleStatus('🟢 Conectado a Google Drive','google-ok');
+        }else{
+          googleTokenWaiters.splice(0).forEach(r=>r.reject(new Error('Google no entregó un token de acceso.')));
+        }
+      },
+      error_callback:(err)=>{
+        googleTokenWaiters.splice(0).forEach(r=>r.reject(err||new Error('Autorización cancelada.')));
+      }
+    });
+  });
+}
+function requestGoogleToken(interactive=true){
+  return new Promise((resolve,reject)=>{
+    if(googleToken){resolve(googleToken);return}
+    googleTokenWaiters.push({resolve,reject});
+    try{googleTokenClient.requestAccessToken({prompt:interactive?'consent':''})}
+    catch(e){googleTokenWaiters.pop();reject(e)}
+  });
+}
 async function googleFetch(url,opts={}){
-  let token=await requestGoogleToken();
-  let headers={...(opts.headers||{}),Authorization:`Bearer ${token}`};
-  let res=await fetch(url,{...opts,headers});
+  const token=await requestGoogleToken(true);
+  const headers={...(opts.headers||{}),Authorization:`Bearer ${token}`};
+  const res=await fetch(url,{...opts,headers});
   if(res.status===401){
     googleToken='';
-    token=await requestGoogleToken();
-    headers={...(opts.headers||{}),Authorization:`Bearer ${token}`};
-    res=await fetch(url,{...opts,headers});
+    const token2=await requestGoogleToken(true);
+    const headers2={...(opts.headers||{}),Authorization:`Bearer ${token2}`};
+    return fetch(url,{...opts,headers:headers2});
   }
   return res;
 }
-
 async function getImagesForBackup(){
   try{const list=await waImageGetAll();return list.map(x=>({id:x.id,name:x.name,dataUrl:x.dataUrl,favorite:!!x.favorite,createdAt:x.createdAt||'',updatedAt:x.updatedAt||''}));}
   catch(e){console.warn('No se pudieron incluir las imágenes en el respaldo.',e);return []}
@@ -605,8 +700,10 @@ async function findGoogleBackup(){
 }
 async function uploadGoogleBackup(silent=false){
   if(googleBusy)return;
+  if(!googleCfg.clientId)return;
   googleBusy=true;
   try{
+    await initGoogleClient();
     setGoogleStatus('⏳ Guardando respaldo...','google-warn');
     const payload=JSON.stringify(await backupPayload());
     const existing=await findGoogleBackup();
@@ -639,8 +736,10 @@ async function uploadGoogleBackup(silent=false){
   }finally{googleBusy=false}
 }
 async function restoreGoogleBackup(){
+  if(!googleCfg.clientId)return alert('Primero agrega el Client ID de Google.');
   if(!confirm('¿Restaurar la información guardada en Google Drive? Los datos actuales de esta aplicación serán reemplazados por la copia.'))return;
   try{
+    await initGoogleClient();
     setGoogleStatus('⏳ Buscando copia...','google-warn');
     const file=await findGoogleBackup();
     if(!file)return alert('No encontré una copia de Internet Powerful en esta cuenta de Google.');
@@ -678,8 +777,13 @@ async function restoreGoogleBackup(){
   }
 }
 $('googleConnect').onclick=async()=>{
+  const id=$('googleClientId').value.trim();
+  if(!id)return alert('Primero escribe el Client ID de Google OAuth 2.0.');
+  googleCfg.clientId=id;
+  saveGoogleCfg();
   try{
-    await requestGoogleToken();
+    await initGoogleClient();
+    await requestGoogleToken(true);
     setGoogleStatus('🟢 Conectado a Google Drive','google-ok');
     await uploadGoogleBackup(false);
   }catch(err){
@@ -688,15 +792,12 @@ $('googleConnect').onclick=async()=>{
   }
 };
 $('googleDisconnect').onclick=()=>{
-  try{
-    if(window.Android&&typeof Android.disconnectGoogleDrive==='function'){
-      Android.disconnectGoogleDrive();
-    }else{
-      window.onAndroidGoogleDriveDisconnected();
-    }
-  }catch(e){
-    window.onAndroidGoogleDriveDisconnected();
+  if(googleToken&&window.google&&google.accounts&&google.accounts.oauth2){
+    try{google.accounts.oauth2.revoke(googleToken,()=>{})}catch(e){}
   }
+  googleToken='';
+  googleTokenClient=null;
+  setGoogleStatus('No conectado','google-warn');
 };
 $('googleBackupNow').onclick=()=>uploadGoogleBackup(false);
 $('googleRestore').onclick=restoreGoogleBackup;
@@ -704,14 +805,19 @@ $('googleAutoBackup').onchange=e=>{
   googleCfg.auto=e.target.checked;
   saveGoogleCfg();
 };
+$('googleClientId').onchange=e=>{
+  googleCfg.clientId=e.target.value.trim();
+  saveGoogleCfg();
+};
 function scheduleGoogleAutoBackup(){
-  if(!googleCfg.auto)return;
+  if(!googleCfg.auto||!googleCfg.clientId)return;
   clearTimeout(googleBackupTimer);
   googleBackupTimer=setTimeout(()=>uploadGoogleBackup(true),8000);
 }
 loadGoogleCfg();
+if($('googleClientId'))$('googleClientId').value=googleCfg.clientId||'';
 if($('googleAutoBackup'))$('googleAutoBackup').checked=!!googleCfg.auto;
-setGoogleStatus(googleCfg.lastBackup?'🟡 Configurado; pendiente de conectar':'No conectado','google-warn');
+setGoogleStatus(googleCfg.lastBackup?'🟡 Configurado; pendiente de conectar':'No conectado',googleCfg.lastBackup?'google-warn':'google-warn');
 
 $('backup').onclick=async()=>{
   const p=await backupPayload();
@@ -736,7 +842,7 @@ $('restore').onchange=e=>{
       DAYS=[...new Set(DAYS)];
       db.settings.paymentDays=[...DAYS];
       db.clients.forEach(c=>{c.history=c.history||{};Object.keys(c.history).forEach(k=>{if(c.history[k]==='suspended')c.history[k]='pending'})});
-      save();await restoreImagesFromBackup(backupImages);refreshDaySelects();refreshFilterDay();renderAll();syncCommitmentReminders();
+      save();await restoreImagesFromBackup(backupImages);refreshDaySelects();refreshFilterDay();renderAll();
       alert('Copia restaurada correctamente, incluyendo la galería de imágenes.');
     }catch(err){alert('Copia inválida o no se pudieron restaurar las imágenes.')}
   };
@@ -744,7 +850,6 @@ $('restore').onchange=e=>{
 };
 $('searchClients').oninput=renderClients;$('filterStatus').onchange=renderClients;$('filterDay').onchange=renderClients;$('filterLocation').onchange=renderClients;$('filterMonth').onchange=renderClients;$('filterYear').onchange=renderClients;
 renderAll();
-syncCommitmentReminders();
 (function(){
   const pday=document.getElementById('printDay');
   const pyear=document.getElementById('printYear');
@@ -777,46 +882,14 @@ th{background:#f2eee4;font-weight:800;height:9mm}
 th.p-num,td.p-num{width:9mm}.p-name{width:55mm;text-align:left}.p-name small{display:block;color:#666;font-size:7pt;margin-top:1mm}.p-cell span{display:block;width:5.2mm;height:5.2mm;border:1.2px solid #444;border-radius:50%;margin:auto}.p-empty{height:18mm;color:#666}.p-foot{font-size:7pt;color:#666;margin-top:2mm}
 </style>`}
   function openPrint(days){
-  if(!days.length)return alert('No hay fechas de pago para imprimir.');
-
-  const y=Number(pyear.value)||new Date().getFullYear();
-
-  // Generar el documento de impresión y mantenerlo vivo
-  // mientras Android muestra la vista preliminar.
-  printDoc.innerHTML=printCss()+days.map(d=>pageForDay(d,y)).join('');
-
-  document.body.classList.add('printing-pdf');
-
-  let printFinished=false;
-  let cleanupTimer=null;
-
-  const cleanup=()=>{
-    if(!printFinished)return;
-
-    clearTimeout(cleanupTimer);
-    window.removeEventListener('focus',cleanup);
-
-    document.body.classList.remove('printing-pdf');
-    printDoc.innerHTML='';
-  };
-
-  // En Android no usamos "afterprint" porque puede dispararse
-  // antes de que el usuario termine de configurar la impresión.
-  const handleFocus=()=>{
-    printFinished=true;
-
-    // Pequeña espera para evitar que Android limpie el contenido
-    // mientras todavía está reconstruyendo la vista preliminar.
-    cleanupTimer=setTimeout(cleanup,500);
-  };
-
-  window.addEventListener('focus',handleFocus);
-
-  // Esperar a que el DOM de impresión esté completamente preparado.
-  setTimeout(()=>{
-    window.print();
-  },150);
-}
+    if(!days.length)return alert('No hay fechas de pago para imprimir.');
+    const y=Number(pyear.value)||new Date().getFullYear();
+    printDoc.innerHTML=printCss()+days.map(d=>pageForDay(d,y)).join('');
+    document.body.classList.add('printing-pdf');
+    const cleanup=()=>{document.body.classList.remove('printing-pdf');printDoc.innerHTML='';window.removeEventListener('afterprint',cleanup)};
+    window.addEventListener('afterprint',cleanup);
+    setTimeout(()=>window.print(),150);
+  }
   pyear.innerHTML='';printYears();refreshPrintDays();
   document.getElementById('printSelectedList').onclick=()=>openPrint([Number(pday.value)]);
   document.getElementById('printAllLists').onclick=()=>{if(confirm(`Se prepararán ${DAYS.length} listas, una por cada fecha de pago. ¿Continuar?`))openPrint(DAYS.slice())};
