@@ -143,7 +143,35 @@ public class MainActivity extends Activity {
                             Intent.CATEGORY_OPENABLE
                     );
 
-                    intent.setType("application/json");
+                    String[] acceptTypes =
+        fileChooserParams != null
+                ? fileChooserParams.getAcceptTypes()
+                : null;
+
+String mimeType = "application/json";
+
+if (acceptTypes != null) {
+    for (String acceptType : acceptTypes) {
+        if (acceptType == null) {
+            continue;
+        }
+
+        String type = acceptType.trim()
+                .toLowerCase(java.util.Locale.ROOT);
+
+        if (type.startsWith("image/")) {
+            mimeType = "image/*";
+            break;
+        }
+
+        if (type.equals("*/*")) {
+            mimeType = "*/*";
+            break;
+        }
+    }
+}
+
+intent.setType(mimeType);
 
                     startActivityForResult(
                             intent,
